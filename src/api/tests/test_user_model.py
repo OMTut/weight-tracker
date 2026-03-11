@@ -13,6 +13,7 @@ os.environ["DATABASE_URL"] = "sqlite:///:memory:"
 
 from database import Base  # noqa: E402
 from models.user import User  # noqa: E402
+import models.weight_entry  # noqa: F401, E402 — register WeightEntry for User relationship
 
 
 @pytest.fixture

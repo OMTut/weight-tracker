@@ -1,29 +1,13 @@
 services:
-  db:
-    image: postgres:17-alpine
-    restart: unless-stopped
-    environment:
-      POSTGRES_USER: weighttracker
-      POSTGRES_PASSWORD: weighttracker
-      POSTGRES_DB: weighttracker
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U weighttracker"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
   api:
     build: ./api
     restart: unless-stopped
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: postgresql://weighttracker:weighttracker@db:5432/weighttracker
-    depends_on:
-      db:
-        condition: service_healthy
+      DATABASE_URL: sqlite:////app/data/db.sqlite
+    volumes:
+      - sqlite_data:/app/data
 
   web:
     build: ./web
@@ -34,4 +18,4 @@ services:
       - api
 
 volumes:
-  postgres_data:
+  sqlite_data:
