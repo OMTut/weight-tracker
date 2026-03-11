@@ -31,6 +31,10 @@ This sandbox runs emulated aarch64 Linux. Apply as needed:
 
 - **If using TanStack Start:** Check that `src/integrations/tanstack-query/root-provider.tsx` has a default export wrapping children with `QueryClientProvider`. The starter template ships without it, causing a 500 on load.
 
+## Security Rules
+
+- **Never commit secrets or API keys** to git. Use `${ENV_VAR}` syntax in docker-compose.yaml and read values from environment variables. Never hardcode secret values in any committed file.
+
 ## Main Tasks
 
 Install dependencies (using the sequence above), then install Playwright system dependencies: `sudo npx playwright install-deps chromium 2>&1`. Allow up to 10 minutes for tasks to complete.
