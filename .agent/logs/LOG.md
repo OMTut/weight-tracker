@@ -10,6 +10,15 @@
 
 ## Session Log
 
+### 2026-03-11 — TASK-5: POST /api/auth/register — create new user account
+
+- Created `src/api/schemas/auth.py` with RegisterRequest, UserResponse, AuthResponse Pydantic schemas
+- Created `src/api/routers/auth.py` with POST /api/auth/register endpoint (201 on success, 400 on duplicate email)
+- Registered auth router in `main.py`
+- Added `email-validator==2.2.0` to requirements.txt and installed it
+- Added `httpx` for FastAPI TestClient support
+- All 16 tests pass (5 new register tests + 11 existing)
+
 ### 2026-03-11 — TASK-4: JWT token utility and password hashing setup
 
 - Created `src/api/dependencies/security.py` with hash_password/verify_password (using bcrypt directly, bypassing passlib incompatibility with bcrypt 5.x) and create_access_token/decode_access_token (python-jose HS256, 30-day expiry, SECRET_KEY from env)

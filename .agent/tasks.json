@@ -32,7 +32,7 @@
     "title": "POST /api/auth/register — create new user account",
     "category": "api-endpoint",
     "specFilePath": ".agent/tasks/TASK-5.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-6",
