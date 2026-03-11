@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from database import Base, engine
 import models.user  # noqa: F401 — ensures User model is registered with Base
+import models.weight_entry  # noqa: F401 — ensures WeightEntry model is registered with Base
 
 
 @asynccontextmanager
