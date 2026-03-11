@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+.venv/
+
+# Build output
+dist/
+dist-ssr/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Environment
+*.local
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.sw?
+
+# Ralph loop - runtime artifacts (do not commit)
+.agent/history/
+.agent/logs/
+.agent/screenshots/
+.agent/tasks.json
+
+# AI tool configs (local only)
+.claude/
+.agents/
+.codex/
+.cursor/
