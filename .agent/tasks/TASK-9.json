@@ -1,0 +1,39 @@
+{
+  "id": "TASK-9",
+  "title": "POST /api/weight — log new weight entry",
+  "category": "api-endpoint",
+  "description": "Implement the endpoint to log a new weight entry for the current user. The date is always set to today server-side — the client does not provide it.",
+  "acceptanceCriteria": [
+    "POST /api/weight with valid weight_value returns 201 with the created entry",
+    "recorded_at is set to today's date server-side (client cannot override it)",
+    "weight_value must be a positive number — negative or zero returns 422",
+    "Entry is associated with the current authenticated user",
+    "Returns 401 if no valid JWT provided"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Create CreateWeightRequest schema",
+      "details": "In src/api/schemas/weight.py, add CreateWeightRequest(BaseModel) with: weight_value (float, gt=0). The gt=0 constraint ensures only positive values are accepted.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Implement POST / endpoint",
+      "details": "In src/api/routers/weight.py, add POST / route. Handler: accept CreateWeightRequest body, create WeightEntry(id=str(uuid4()), user_id=current_user.id, weight_value=request.weight_value, recorded_at=date.today()), add to db and commit, refresh the entry, return WeightEntryResponse with status 201.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Test the endpoint",
+      "details": "POST to /api/weight with {\"weight_value\": 185.5} and valid JWT. Verify: status 201, response includes id, weight_value=185.5, recorded_at=today's date. POST with weight_value=0 — verify 422. POST with weight_value=-5 — verify 422. POST without token — verify 401.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-8"],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "Use date.today() from Python's datetime module — this will use the server's local date",
+    "Do not accept recorded_at from the client — it must always be server-side today"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "id": "TASK-34",
+  "title": "E2E smoke tests — full user journey with Playwright",
+  "category": "functional",
+  "description": "Write Playwright end-to-end tests covering the critical user flows: sign up, log in, log a weight entry, edit it, delete it, and log out.",
+  "acceptanceCriteria": [
+    "Test: user can sign up with a new email and is redirected to dashboard",
+    "Test: user can log in with existing credentials",
+    "Test: user can log a weight entry and see it in the table",
+    "Test: user can edit a weight entry and see the updated value",
+    "Test: user can delete a weight entry and it disappears from the table",
+    "Test: user can log out and is redirected to /login",
+    "All tests pass when run against the running app"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Configure Playwright for the app",
+      "details": "In src/playwright.config.ts, set baseURL to 'http://localhost:3001'. Set testDir to './tests/e2e'. Configure a single chromium project. Set timeout to 30000ms.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Write auth flow tests",
+      "details": "Create src/tests/e2e/auth.spec.ts. Test 1 - signup: navigate to /signup, fill name/email/password, click submit, assert URL is /dashboard. Test 2 - login: navigate to /login, fill email/password, submit, assert URL is /dashboard. Test 3 - logout: log in, click username in top bar, click Logout, assert URL is /login.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Write weight entry flow tests",
+      "details": "Create src/tests/e2e/weight.spec.ts. Use a beforeEach to log in. Test 1 - log entry: click +, fill weight input with '185.5', submit, assert table contains '185.5'. Test 2 - edit entry: click ... on the row, click Edit, change value to '186.0', save, assert table shows '186.0'. Test 3 - delete entry: click ... on the row, click Delete, assert the row is no longer in the table.",
+      "pass": false
+    },
+    {
+      "step": 4,
+      "description": "Run tests and verify all pass",
+      "details": "Run npx playwright test from the src/ directory with the app running. Fix any failing tests. Take a screenshot of passing test results.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-32"],
+  "estimatedComplexity": "medium",
+  "technicalNotes": [
+    "Use unique emails for each test run to avoid conflicts — e.g. Date.now() in the email",
+    "Use page.waitForURL() after form submissions to assert redirects",
+    "The playwright.config.ts in src/ already exists — update it rather than creating a new one"
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "id": "TASK-31",
+  "title": "Account page — weight unit preference selector",
+  "category": "ui-ux",
+  "description": "Add the weight unit selector to the Account page so users can switch between lbs and kg.",
+  "acceptanceCriteria": [
+    "Weight Unit section shows the current unit (lbs or kg) as the selected option",
+    "User can select the other unit from a dropdown/select component",
+    "Saving calls PATCH /api/user/preferences and updates the unit in AuthContext",
+    "After saving, the weight entry form shows the new unit label",
+    "After saving, the weight table shows entries with the new unit label",
+    "Save button shows loading state during API call",
+    "Verify in browser using Playwright"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Build the unit preference selector",
+      "details": "Use shadcn/ui Select component with two SelectItem options: value='lbs' 'Pounds (lbs)' and value='kg' 'Kilograms (kg)'. Default selected to user.weight_unit from useAuth(). Track selected value in local state. Add a Save button.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Handle save",
+      "details": "onClick Save: call updatePreferences(selectedUnit) from apiService. On success: call updateUser() in AuthContext with the updated user object (which has the new weight_unit). Show 'Preferences saved' confirmation.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Verify with Playwright",
+      "details": "Switch from lbs to kg, click Save. Navigate to /dashboard — verify the weight entry form shows 'kg' label. Verify the table shows 'kg' next to weights. Switch back to lbs and verify it reverts.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-30"],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "The unit change is cosmetic on the frontend — all weight values are stored as-entered, not converted",
+    "After updateUser() is called in AuthContext, all components reading user.weight_unit will re-render with the new unit"
+  ]
+}

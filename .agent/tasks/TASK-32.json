@@ -1,0 +1,49 @@
+{
+  "id": "TASK-32",
+  "title": "Account page — delete account with confirmation dialog",
+  "category": "ui-ux",
+  "description": "Implement the Delete Account section with a confirmation dialog before permanently deleting the account and all data.",
+  "acceptanceCriteria": [
+    "Delete Account section has a red destructive 'Delete Account' button",
+    "Clicking the button opens a shadcn/ui Dialog with a warning message",
+    "Dialog warns that all data will be permanently deleted",
+    "Dialog has 'Cancel' and 'Delete Account' buttons",
+    "Clicking Cancel closes the dialog without action",
+    "Clicking 'Delete Account' in the dialog calls DELETE /api/user/me",
+    "On success: clears localStorage token and redirects to /login",
+    "Delete button in dialog shows loading state during API call",
+    "Verify in browser using Playwright"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Add delete account section to AccountPage",
+      "details": "In the 'Danger Zone' Card, add a description 'Permanently delete your account and all weight data. This cannot be undone.' and a Button variant='destructive' that sets showDeleteDialog state to true.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Build the confirmation Dialog",
+      "details": "Use shadcn/ui Dialog controlled by showDeleteDialog state. DialogHeader: 'Delete Account'. DialogDescription: 'This will permanently delete your account and all weight entries. This action cannot be undone.' DialogFooter: Cancel Button (variant='outline', onClick=close dialog) and Delete Account Button (variant='destructive', onClick=handleDeleteAccount, shows loading spinner when deleting).",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Handle delete account",
+      "details": "handleDeleteAccount: call deleteAccount() from apiService. On success: call auth.logout() from AuthContext (which clears localStorage and redirects to /login). On error: close dialog and show error message.",
+      "pass": false
+    },
+    {
+      "step": 4,
+      "description": "Verify with Playwright",
+      "details": "Click Delete Account — verify dialog opens. Take screenshot of dialog. Click Cancel — verify dialog closes with no action. Click Delete Account again, then confirm in dialog — verify redirect to /login. Attempt to log in with the deleted account's credentials — verify login fails.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-31"],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "Use controlled Dialog (open prop) rather than uncontrolled for predictable behavior",
+    "auth.logout() should handle clearing localStorage and redirect — don't duplicate that logic here"
+  ]
+}

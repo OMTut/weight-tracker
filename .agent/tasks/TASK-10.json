@@ -1,0 +1,40 @@
+{
+  "id": "TASK-10",
+  "title": "PUT /api/weight/{id} — update weight entry value",
+  "category": "api-endpoint",
+  "description": "Implement the endpoint to update the weight_value of an existing entry. The date cannot be changed.",
+  "acceptanceCriteria": [
+    "PUT /api/weight/{id} with valid weight_value returns 200 with updated entry",
+    "Only the weight_value is updated — recorded_at cannot be changed",
+    "Returns 404 if entry does not exist",
+    "Returns 403 if entry belongs to a different user",
+    "weight_value must be positive — zero or negative returns 422",
+    "Returns 401 if no valid JWT provided"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Create UpdateWeightRequest schema",
+      "details": "In src/api/schemas/weight.py, add UpdateWeightRequest(BaseModel) with: weight_value (float, gt=0).",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Implement PUT /{id} endpoint",
+      "details": "In src/api/routers/weight.py, add PUT /{entry_id} route. Handler: query db for WeightEntry with entry_id, if not found raise HTTPException(404, 'Entry not found'), if entry.user_id != current_user.id raise HTTPException(403, 'Not authorized'), update entry.weight_value = request.weight_value, commit, refresh, return WeightEntryResponse.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Test the endpoint",
+      "details": "Create a weight entry, then PUT /api/weight/{id} with {\"weight_value\": 190.0}. Verify: status 200, weight_value updated, recorded_at unchanged. Try updating another user's entry — verify 403. Try updating non-existent id — verify 404.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-9"],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "Check user ownership before updating to prevent unauthorized modifications",
+    "Return 403 (not 404) when entry exists but belongs to another user — this prevents exposing whether the entry exists"
+  ]
+}

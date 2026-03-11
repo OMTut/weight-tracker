@@ -1,0 +1,49 @@
+{
+  "id": "TASK-26",
+  "title": "Edit weight entry — inline form in table row",
+  "category": "ui-ux",
+  "description": "Implement the edit flow for weight entries. When the user clicks Edit in the row actions menu, the weight cell transforms into an editable input. The date cannot be changed.",
+  "acceptanceCriteria": [
+    "Clicking Edit on a row puts that row into edit mode",
+    "In edit mode, the Weight cell shows an input pre-filled with the current weight value",
+    "In edit mode, the Date cell remains read-only",
+    "In edit mode, the Actions cell shows Save and Cancel buttons",
+    "Clicking Save calls PUT /api/weight/{id} and exits edit mode on success",
+    "Clicking Cancel exits edit mode without saving",
+    "Only one row can be in edit mode at a time",
+    "Validate that the edited weight is a positive number",
+    "Verify in browser using Playwright"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Add editingId state to WeightTable",
+      "details": "In WeightTable.tsx, add editingId (string | null) and editingValue (string) state. When the user clicks Edit in the dropdown, set editingId = entry.id and editingValue = String(entry.weight_value).",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Render edit mode for the active row",
+      "details": "In the table row render, check if entry.id === editingId. If true: Weight cell renders an Input type='number' step='0.1' with value=editingValue and onChange=setEditingValue. Actions cell renders a Save button and Cancel button (not the ... dropdown). If false: render normally.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Implement save and cancel handlers",
+      "details": "handleSave(id): validate editingValue is a positive number (show inline error if not), call updateWeightEntry(id, parseFloat(editingValue)), on success setEditingId(null) and re-fetch the table data, call onEntryUpdated() prop. handleCancel(): setEditingId(null) and setEditingValue('').",
+      "pass": false
+    },
+    {
+      "step": 4,
+      "description": "Verify with Playwright",
+      "details": "Click Edit on a row — take screenshot showing input in weight cell. Change value and click Save — verify table updates with new value. Click Edit, then Cancel — verify value unchanged. Try saving an empty or invalid value — verify validation error.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-25"],
+  "estimatedComplexity": "medium",
+  "technicalNotes": [
+    "Only one row in edit mode at a time — setting a new editingId implicitly closes the previous edit",
+    "The input should focus automatically when edit mode is activated — use autoFocus on the Input element"
+  ]
+}

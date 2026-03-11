@@ -1,0 +1,50 @@
+{
+  "id": "TASK-23",
+  "title": "Weight area chart with time filter toggle",
+  "category": "ui-ux",
+  "description": "Build the area chart that plots the user's weight over time using Recharts, with 4 time filter toggle buttons.",
+  "acceptanceCriteria": [
+    "Chart renders as a smooth area chart with weight on Y-axis and date on X-axis",
+    "4 filter buttons: 'Last 7 Days', 'Last 30 Days', 'Last 3 Months', 'All Time'",
+    "Active filter button is visually highlighted",
+    "Selecting a filter re-fetches data and updates the chart",
+    "Chart is responsive (fills container width)",
+    "Chart shows an empty state message when no entries exist for the selected range",
+    "Chart re-fetches when refreshKey changes (new entry added)",
+    "Verify in browser using Playwright"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Create the WeightChart component",
+      "details": "Create src/web/src/components/WeightChart.tsx. Props: refreshKey (number). State: activeFilter ('7d' | '30d' | '3m' | 'all'), entries (WeightEntry[]), isLoading (boolean). On mount and when filter/refreshKey changes, call getWeightEntries({ time_filter: activeFilter, page: 1, page_size: 1000 }) — use a large page size to get all entries for the chart.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Build the time filter buttons",
+      "details": "Render 4 buttons using shadcn/ui Button: variant='outline' for inactive, variant='default' for active. Labels: 'Last 7 Days', 'Last 30 Days', 'Last 3 Months', 'All Time'. Clicking a button sets activeFilter state.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Render the Recharts area chart",
+      "details": "Use ResponsiveContainer width='100%' height={300}. Inside: AreaChart with data mapped from entries to { date: entry.recorded_at, weight: entry.weight_value }. Add CartesianGrid, XAxis (dataKey='date', formatted as DD.MM), YAxis (domain set to [min-5, max+5] for visual padding), Tooltip, Area (type='monotone', dataKey='weight', stroke primary color, fill with opacity). Show a centered 'No data for this period' message when entries is empty.",
+      "pass": false
+    },
+    {
+      "step": 4,
+      "description": "Verify with Playwright",
+      "details": "With weight entries logged, take a screenshot of the chart. Click each filter button and verify the chart updates. Verify the active filter button is highlighted. Test with no entries in the selected range and verify the empty state message.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-22"],
+  "estimatedComplexity": "medium",
+  "technicalNotes": [
+    "Recharts requires numeric data for Area — ensure weight values are numbers not strings",
+    "Sort entries by recorded_at ascending for the chart (oldest to newest left to right)",
+    "Use a page_size of 1000 when fetching for the chart — this is sufficient for a personal tracker",
+    "Recharts ResponsiveContainer needs a parent with explicit height or width"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "TASK-6",
+  "title": "POST /api/auth/login — authenticate user and return JWT",
+  "category": "api-endpoint",
+  "description": "Implement the login endpoint that validates email/password credentials and returns a JWT token for authenticated sessions.",
+  "acceptanceCriteria": [
+    "POST /api/auth/login with valid credentials returns 200 with access_token and user object",
+    "Wrong password returns 401 with message 'Invalid email or password'",
+    "Unknown email returns 401 with message 'Invalid email or password'",
+    "Response does NOT include hashed_password",
+    "Returned JWT can be used to access protected endpoints"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Create LoginRequest schema",
+      "details": "In src/api/schemas/auth.py, add LoginRequest(BaseModel) with fields: email (EmailStr), password (str). Reuse the existing AuthResponse schema for the response.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Implement POST /login endpoint",
+      "details": "In src/api/routers/auth.py, add POST /login route. Steps: query db for User where User.email == request.email, if not found raise HTTPException(401, 'Invalid email or password'), call verify_password(request.password, user.hashed_password), if False raise HTTPException(401, 'Invalid email or password'), create JWT with create_access_token({'sub': user.id}), return AuthResponse.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Test the endpoint",
+      "details": "POST to http://localhost:8000/api/auth/login with {\"email\": \"test@example.com\", \"password\": \"password123\"}. Verify: status 200, access_token present. Then test with wrong password — verify 401. Then test with unknown email — verify 401. Both error cases should return the same generic message to prevent user enumeration.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-5"],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "Always return the same error message for wrong email and wrong password to prevent user enumeration attacks",
+    "Do not add a sleep/delay to prevent timing attacks — bcrypt comparison is already slow enough"
+  ]
+}

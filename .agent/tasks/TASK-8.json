@@ -1,0 +1,48 @@
+{
+  "id": "TASK-8",
+  "title": "GET /api/weight — list weight entries with pagination and time filter",
+  "category": "api-endpoint",
+  "description": "Implement the endpoint to retrieve a paginated list of the current user's weight entries, with an optional time range filter.",
+  "acceptanceCriteria": [
+    "GET /api/weight returns only the current user's entries",
+    "Response includes entries array, total count, page, and page_size",
+    "Default page size is 10, page defaults to 1",
+    "time_filter query param accepts: '7d', '30d', '3m', 'all' (default: 'all')",
+    "Entries are sorted by recorded_at descending (newest first)",
+    "Returns 401 if no valid JWT provided",
+    "Returns empty array (not 404) when user has no entries"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Create weight entry schemas",
+      "details": "Create src/api/schemas/weight.py. Define WeightEntryResponse(BaseModel) with: id (str), weight_value (float), recorded_at (date), created_at (datetime). Use model_config = ConfigDict(from_attributes=True). Define PaginatedWeightResponse(BaseModel) with: entries (list[WeightEntryResponse]), total (int), page (int), page_size (int), total_pages (int).",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Create the weight router",
+      "details": "Create src/api/routers/weight.py with APIRouter(prefix='/api/weight', tags=['weight']). Implement GET / endpoint with: current_user: User = Depends(get_current_user), db: Session = Depends(get_db), page: int = Query(1, ge=1), page_size: int = Query(10, ge=1, le=100), time_filter: str = Query('all').",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Implement time filter logic",
+      "details": "Inside the GET / handler, calculate the start date based on time_filter: '7d' = today - 7 days, '30d' = today - 30 days, '3m' = today - 90 days, 'all' = no filter. Build SQLAlchemy query: filter WeightEntry.user_id == current_user.id, optionally filter WeightEntry.recorded_at >= start_date, order_by(WeightEntry.recorded_at.desc()). Get total count before pagination. Apply offset((page-1)*page_size).limit(page_size).",
+      "pass": false
+    },
+    {
+      "step": 4,
+      "description": "Register router and test endpoint",
+      "details": "Add weight router to main.py with app.include_router(). Test: create 2 weight entries for a user, GET /api/weight with valid JWT, verify both entries returned in descending order. Test time_filter=7d when entries are older than 7 days — should return empty. Test without token — should return 401.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-7", "TASK-2"],
+  "estimatedComplexity": "medium",
+  "technicalNotes": [
+    "total_pages = ceil(total / page_size) — import math.ceil",
+    "Always filter by user_id — never return entries from other users",
+    "Use date.today() from Python's datetime module for time filter calculations"
+  ]
+}

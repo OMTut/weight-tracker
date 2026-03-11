@@ -1,0 +1,37 @@
+{
+  "id": "TASK-14",
+  "title": "PATCH /api/user/preferences — update weight unit preference",
+  "category": "api-endpoint",
+  "description": "Implement the endpoint to update the user's preferred weight unit (lbs or kg).",
+  "acceptanceCriteria": [
+    "PATCH /api/user/preferences with weight_unit='kg' returns 200 with updated UserResponse",
+    "PATCH with weight_unit='lbs' returns 200 with updated UserResponse",
+    "Invalid unit value (e.g. 'pounds') returns 422",
+    "Returns 401 if no valid JWT provided"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Create UpdatePreferencesRequest schema",
+      "details": "In src/api/schemas/user.py, add UpdatePreferencesRequest(BaseModel) with: weight_unit (Literal['lbs', 'kg']). Using Literal ensures only exactly 'lbs' or 'kg' are accepted.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Implement PATCH /preferences endpoint",
+      "details": "In user router, add PATCH /preferences route. Handler: set current_user.weight_unit = request.weight_unit, commit, refresh, return UserResponse.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Test the endpoint",
+      "details": "PATCH /api/user/preferences with {\"weight_unit\": \"kg\"} — verify 200 and weight_unit is 'kg' in response. PATCH with {\"weight_unit\": \"lbs\"} — verify 200. PATCH with {\"weight_unit\": \"pounds\"} — verify 422.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-12"],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "Use Literal['lbs', 'kg'] from typing for strict value validation in Pydantic"
+  ]
+}

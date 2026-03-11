@@ -1,0 +1,49 @@
+{
+  "id": "TASK-21",
+  "title": "Dashboard layout — top bar with username dropdown",
+  "category": "ui-ux",
+  "description": "Build the dashboard page shell with a sticky top bar that contains the + button on the left, the app name 'HeavyDeets' centered, and the user's display name on the right with a dropdown menu.",
+  "acceptanceCriteria": [
+    "Top bar is sticky and visible at all times while scrolling",
+    "App name 'HeavyDeets' is centered in the top bar",
+    "User's display name appears on the right side of the top bar",
+    "Clicking the username opens a dropdown with 'Account Info' and 'Logout' options",
+    "'Account Info' navigates to /account",
+    "'Logout' calls auth.logout() and redirects to /login",
+    "+ button appears on the left side of the top bar",
+    "Layout works on mobile (375px)",
+    "Verify in browser using Playwright"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Create DashboardPage component with layout",
+      "details": "Create src/web/src/pages/DashboardPage.tsx. Layout: full-height flex column div. Top bar: fixed/sticky header with flex justify-between items-center, padding px-4 py-3, border-bottom, background white. Left slot: + button (placeholder for now). Center slot: 'HeavyDeets' text. Right slot: username dropdown.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Build the username dropdown menu",
+      "details": "Use shadcn/ui DropdownMenu components: DropdownMenuTrigger wrapping a Button variant='ghost' showing user.name, DropdownMenuContent with DropdownMenuItem for 'Account Info' (navigates to /account using useNavigate) and DropdownMenuItem for 'Logout' (calls auth.logout()). Add lucide-react ChevronDown icon next to name.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Add main content area placeholder",
+      "details": "Below the top bar, add a main content area with flex-1 overflow-y-auto and padding. This will hold the chart and table in later tasks. For now, render placeholder text.",
+      "pass": false
+    },
+    {
+      "step": 4,
+      "description": "Verify with Playwright",
+      "details": "Log in, navigate to /dashboard. Take screenshot. Verify top bar layout. Click username — verify dropdown opens with correct options. Click 'Logout' — verify redirect to /login. Click 'Account Info' — verify navigation to /account.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-20"],
+  "estimatedComplexity": "medium",
+  "technicalNotes": [
+    "Use useAuth() to get user.name and logout() function",
+    "shadcn/ui DropdownMenu requires DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem in that structure"
+  ]
+}

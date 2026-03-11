@@ -1,0 +1,33 @@
+{
+  "id": "TASK-11",
+  "title": "DELETE /api/weight/{id} — delete weight entry",
+  "category": "api-endpoint",
+  "description": "Implement the endpoint to permanently delete a weight entry.",
+  "acceptanceCriteria": [
+    "DELETE /api/weight/{id} returns 204 No Content on success",
+    "Returns 404 if entry does not exist",
+    "Returns 403 if entry belongs to a different user",
+    "Returns 401 if no valid JWT provided",
+    "Entry is permanently removed from the database"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Implement DELETE /{id} endpoint",
+      "details": "In src/api/routers/weight.py, add DELETE /{entry_id} route with response_code=204. Handler: query db for WeightEntry with entry_id, if not found raise HTTPException(404), if entry.user_id != current_user.id raise HTTPException(403), call db.delete(entry) and db.commit(), return Response(status_code=204).",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Test the endpoint",
+      "details": "Create a weight entry, then DELETE /api/weight/{id} with valid JWT. Verify: status 204, no response body. Then GET /api/weight and verify the entry is gone. Try deleting the same entry again — verify 404. Try deleting another user's entry — verify 403.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-10"],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "Return 204 No Content for successful delete — no response body",
+    "Import Response from fastapi to return an empty 204 response"
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "id": "TASK-4",
+  "title": "JWT token utility and password hashing setup",
+  "category": "security",
+  "description": "Implement reusable utilities for password hashing with bcrypt and JWT token creation/verification used across auth endpoints.",
+  "acceptanceCriteria": [
+    "hash_password(plain: str) returns a bcrypt hash",
+    "verify_password(plain: str, hashed: str) returns True for correct password, False otherwise",
+    "create_access_token(data: dict) returns a signed JWT string",
+    "decode_access_token(token: str) returns the payload dict or raises an exception for invalid/expired tokens",
+    "JWT secret key is loaded from environment variable SECRET_KEY",
+    "JWT tokens expire after 30 days"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Create password hashing utilities",
+      "details": "Create src/api/dependencies/security.py. Import CryptContext from passlib.context. Create pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto'). Add hash_password(plain: str) -> str function using pwd_context.hash(). Add verify_password(plain: str, hashed: str) -> bool using pwd_context.verify().",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Create JWT token utilities",
+      "details": "In src/api/dependencies/security.py, import jwt from jose, timedelta from datetime, and settings/env vars. Add SECRET_KEY = os.getenv('SECRET_KEY', 'dev-secret-change-in-production') and ALGORITHM = 'HS256'. Add TOKEN_EXPIRE_DAYS = 30. Implement create_access_token(data: dict) -> str: creates a copy of data, adds 'exp' key set to utcnow() + timedelta(days=TOKEN_EXPIRE_DAYS), returns jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM). Implement decode_access_token(token: str) -> dict: calls jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM]) — raises JWTError on failure.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Add SECRET_KEY to docker-compose environment",
+      "details": "In src/docker-compose.yaml, add SECRET_KEY environment variable to the api service. Use a placeholder value for development. Document that this must be changed for any real deployment.",
+      "pass": false
+    },
+    {
+      "step": 4,
+      "description": "Write unit tests for security utilities",
+      "details": "Create src/api/tests/test_security.py. Test: hash_password returns a string starting with '$2b$', verify_password returns True with correct plain password, verify_password returns False with wrong password, create_access_token returns a string with 3 dot-separated parts, decode_access_token returns the original payload data, decode_access_token raises JWTError with a tampered token.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-3"],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "python-jose uses jose.exceptions.JWTError — import from jose",
+    "Never log or return hashed passwords in API responses",
+    "bcrypt is slow by design (12 rounds) — this is intentional for security"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "id": "TASK-18",
+  "title": "Frontend — auth context, routing, and protected routes",
+  "category": "functional",
+  "description": "Set up React Router with public routes (login, signup) and protected routes (dashboard, account). Create an AuthContext that provides the current user state and login/logout functions throughout the app.",
+  "acceptanceCriteria": [
+    "Unauthenticated users visiting /dashboard are redirected to /login",
+    "Authenticated users visiting /login or /signup are redirected to /dashboard",
+    "AuthContext provides: user, isLoading, login(), logout() to all components",
+    "login() stores token in localStorage and sets user state",
+    "logout() clears token from localStorage and redirects to /login",
+    "On app load, if a token exists in localStorage, the user is fetched and set in context",
+    "App shows a loading state while checking auth on initial load"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Create AuthContext",
+      "details": "Create src/web/src/context/AuthContext.tsx. Define AuthContextType interface with: user (User | null), isLoading (boolean), login(token: string, user: User): void, logout(): void. Create context with createContext. Create AuthProvider component that: reads token from localStorage on mount, if token exists calls getMe() to load user (sets isLoading true/false), exposes login() which stores token + sets user, exposes logout() which removes token, resets user, navigates to /login.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Create ProtectedRoute component",
+      "details": "Create src/web/src/components/ProtectedRoute.tsx. Component checks isLoading — if loading, render a centered spinner. If not loading and no user, return <Navigate to='/login' replace />. Otherwise render <Outlet />.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Set up React Router in App.tsx",
+      "details": "In src/web/src/App.tsx, wrap the app in BrowserRouter and AuthProvider. Define routes: / redirects to /dashboard, public routes: /login, /signup. Protected routes (wrapped in ProtectedRoute): /dashboard, /account. Each route renders the appropriate page component (create placeholder components if pages don't exist yet).",
+      "pass": false
+    },
+    {
+      "step": 4,
+      "description": "Verify routing behavior",
+      "details": "Start dev server. Visit /dashboard without being logged in — verify redirect to /login. After login, visit /login — verify redirect to /dashboard. Refresh on /dashboard while logged in — verify user stays on /dashboard (auth persists via localStorage).",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-17"],
+  "estimatedComplexity": "medium",
+  "technicalNotes": [
+    "Use useNavigate() from react-router-dom for programmatic navigation inside components",
+    "The isLoading state prevents a flash of the login page before the stored token is validated",
+    "Use Outlet from react-router-dom inside ProtectedRoute to render child routes"
+  ]
+}

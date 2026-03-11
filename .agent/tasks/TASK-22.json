@@ -1,0 +1,49 @@
+{
+  "id": "TASK-22",
+  "title": "Weight entry form — revealed by + button",
+  "category": "ui-ux",
+  "description": "Build the weight entry form that appears below the top bar when the user clicks the + button, and disappears after submission or cancellation.",
+  "acceptanceCriteria": [
+    "Clicking + in the top bar reveals the weight entry form",
+    "Form contains a weight value input and a Submit button",
+    "User's current weight unit (lbs or kg) is displayed as a label next to the input",
+    "Clicking Submit calls POST /api/weight and hides the form on success",
+    "After submission, the chart and table refresh with the new entry",
+    "Clicking the + button again while form is open closes it (toggle behavior)",
+    "Form validates that weight is a positive number",
+    "Submit button shows loading state during API call",
+    "Verify in browser using Playwright"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Add form visibility state and toggle to top bar",
+      "details": "In DashboardPage.tsx, add useState<boolean>(false) for showEntryForm. Change the + button onClick to toggle this state. When showEntryForm is true, change the + icon to an X icon (lucide-react X). Render the WeightEntryForm component conditionally below the top bar when showEntryForm is true.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Create WeightEntryForm component",
+      "details": "Create src/web/src/components/WeightEntryForm.tsx. Props: onSuccess(): void, onCancel(): void, weightUnit: string. Use React Hook Form with Zod: z.object({ weight_value: z.number({ invalid_type_error: 'Please enter a number' }).positive('Weight must be positive') }). Render: a div with smooth slide-in animation (or simple conditional render), an Input of type 'number' with step='0.1', a unit label (e.g. 'lbs'), a Submit button with loading state, and a Cancel button that calls onCancel.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Handle submission and refresh",
+      "details": "In WeightEntryForm onSubmit: call createWeightEntry(weight_value) from apiService. On success: call onSuccess() prop (which hides the form and triggers data refresh). On error: show error message. In DashboardPage, the onSuccess callback should set showEntryForm to false and increment a refreshKey state variable that child components (chart, table) use as a useEffect dependency to re-fetch data.",
+      "pass": false
+    },
+    {
+      "step": 4,
+      "description": "Verify with Playwright",
+      "details": "Take screenshots: dashboard with form hidden, dashboard with form visible. Submit a weight entry — verify form disappears. Submit invalid input (letters) — verify validation error. Verify the new entry appears in the table and chart after submit.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-21"],
+  "estimatedComplexity": "medium",
+  "technicalNotes": [
+    "Use z.coerce.number() or register with valueAsNumber: true in React Hook Form to convert the string input value to a number",
+    "The refreshKey pattern: parent holds a number state, passes it to chart/table as prop, they use it in useEffect([refreshKey]) to re-fetch"
+  ]
+}

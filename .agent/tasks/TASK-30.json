@@ -1,0 +1,41 @@
+{
+  "id": "TASK-30",
+  "title": "Account page — change password form",
+  "category": "ui-ux",
+  "description": "Wire up the Password section on the Account page so users can update their password by providing their current password.",
+  "acceptanceCriteria": [
+    "Password section has three inputs: Current Password, New Password, Confirm New Password",
+    "All inputs are of type password",
+    "New Password must be at least 8 characters",
+    "Confirm New Password must match New Password — mismatch shows 'Passwords do not match'",
+    "Wrong current password shows error 'Current password is incorrect'",
+    "Successful save shows confirmation and clears all three inputs",
+    "Save button shows loading state during API call",
+    "Verify in browser using Playwright"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Build the password form",
+      "details": "Zod schema: z.object({ current_password: z.string().min(1), new_password: z.string().min(8, 'At least 8 characters'), confirm_password: z.string() }).refine(data => data.new_password === data.confirm_password, { message: 'Passwords do not match', path: ['confirm_password'] }). Render three Input type='password' fields with labels and error messages.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Handle submission",
+      "details": "onSubmit: call updatePassword(current_password, new_password) from apiService. On success: reset the form (call reset() from useForm) and show 'Password updated' confirmation. On 400 error: show 'Current password is incorrect'.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Verify with Playwright",
+      "details": "Fill in all fields correctly — verify success and form resets. Try wrong current password — verify error. Try mismatched new/confirm passwords — verify 'Passwords do not match' error. Try new password shorter than 8 chars — verify validation error.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-29"],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "Use Zod .refine() with a path pointing to confirm_password to show the mismatch error on the correct field"
+  ]
+}

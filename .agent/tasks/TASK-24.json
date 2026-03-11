@@ -1,0 +1,50 @@
+{
+  "id": "TASK-24",
+  "title": "Weight table with pagination",
+  "category": "ui-ux",
+  "description": "Build the paginated weight entries table with Date, Weight, and Actions columns.",
+  "acceptanceCriteria": [
+    "Table renders with columns: Date | Weight | Actions",
+    "Date is formatted as DD.MM.YYYY",
+    "Weight is displayed as a decimal with the user's unit label (e.g. '185.5 lbs')",
+    "Table shows 10 entries per page",
+    "Pagination controls show current page, total pages, and Prev/Next buttons",
+    "Prev is disabled on page 1, Next is disabled on last page",
+    "Table shows empty state when user has no entries",
+    "Table re-fetches when refreshKey changes",
+    "Verify in browser using Playwright"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Create the WeightTable component",
+      "details": "Create src/web/src/components/WeightTable.tsx. Props: refreshKey (number), onEntryUpdated(): void, onEntryDeleted(): void. State: entries (WeightEntry[]), page (number, default 1), totalPages (number), isLoading (boolean). Fetch data with getWeightEntries({ page, page_size: 10, time_filter: 'all' }) on mount and when page/refreshKey changes.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Render the table",
+      "details": "Use shadcn/ui Table, TableHeader, TableRow, TableHead, TableBody, TableCell components. Columns: Date (format recorded_at as DD.MM.YYYY using date-fns format(parseISO(entry.recorded_at), 'dd.MM.yyyy')), Weight (display entry.weight_value with user.weight_unit), Actions (placeholder ... button). Show a TableRow with colspan 3 and 'No entries yet' message when entries array is empty.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Add pagination controls",
+      "details": "Below the table, render a div with flex justify-between items-center. Left: 'Page X of Y'. Right: two shadcn Button components — 'Previous' (disabled when page === 1, onClick: setPage(page - 1)) and 'Next' (disabled when page === totalPages, onClick: setPage(page + 1)).",
+      "pass": false
+    },
+    {
+      "step": 4,
+      "description": "Verify with Playwright",
+      "details": "Take screenshot of table with entries. Add more than 10 entries and verify pagination controls appear. Click Next and verify page 2 loads. Verify date formatting is DD.MM.YYYY. Verify empty state when no entries.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-23"],
+  "estimatedComplexity": "medium",
+  "technicalNotes": [
+    "Install date-fns: npm install date-fns",
+    "Use parseISO from date-fns to parse the ISO date string from the API before formatting",
+    "Get weightUnit from useAuth() context: const { user } = useAuth()"
+  ]
+}

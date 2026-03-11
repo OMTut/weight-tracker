@@ -1,0 +1,42 @@
+{
+  "id": "TASK-28",
+  "title": "Account page — change display name form",
+  "category": "ui-ux",
+  "description": "Wire up the Display Name section on the Account page so users can update their display name.",
+  "acceptanceCriteria": [
+    "Display Name section shows a text input pre-filled with the current user name",
+    "User can edit the name and click Save",
+    "Saving calls PATCH /api/user/profile and updates the name in AuthContext",
+    "Updated name is immediately reflected in the top bar username on /dashboard",
+    "Empty name shows validation error 'Name is required'",
+    "Save button shows loading state during API call",
+    "Success shows a brief success message or toast",
+    "Verify in browser using Playwright"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Build the display name form",
+      "details": "In AccountPage.tsx or a sub-component, use React Hook Form with Zod: z.object({ name: z.string().min(1, 'Name is required') }). Pre-fill the input with user.name from useAuth(). Render an Input and a Save Button with loading state.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Handle form submission",
+      "details": "onSubmit: call updateProfile({ name }) from apiService. On success: update the user in AuthContext (add an updateUser(user: User) method to AuthContext if not present), show success feedback (e.g. set a success state that renders a green 'Saved!' message for 2 seconds). On error: show error message.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Verify with Playwright",
+      "details": "Go to /account, change the name, click Save. Take screenshot of success state. Navigate to /dashboard — verify new name appears in top bar. Go back to /account — verify input shows new name. Try empty name and save — verify validation error.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-27"],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "Add updateUser(user: User) to AuthContext to allow updating user state after profile changes",
+    "The success message should auto-dismiss after 2-3 seconds using setTimeout + state"
+  ]
+}

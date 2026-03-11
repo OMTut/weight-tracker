@@ -1,0 +1,38 @@
+{
+  "id": "TASK-33",
+  "title": "Nginx proxy — forward /api requests from frontend to backend",
+  "category": "functional",
+  "description": "Configure the nginx server in the web container to proxy /api/* requests to the FastAPI backend, so the frontend doesn't need to hardcode the API URL.",
+  "acceptanceCriteria": [
+    "Requests to /api/* from the browser are proxied to http://api:8000/api/*",
+    "Frontend Axios base URL can be set to '' (empty) or '/' (relative) instead of http://localhost:8000",
+    "Static frontend assets are served correctly",
+    "docker-compose up brings up the full stack and the app works end-to-end"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Update nginx.conf to add API proxy",
+      "details": "In src/web/nginx.conf, add a location block: location /api/ { proxy_pass http://api:8000/api/; proxy_set_header Host $host; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; }. The existing location / block should still serve the React app's index.html for client-side routing (try_files $uri $uri/ /index.html).",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Update Axios base URL to use relative path",
+      "details": "In src/web/src/lib/api.ts, update the Axios instance baseURL from 'http://localhost:8000' to '' (empty string). This makes all requests go to the same origin, and nginx handles the /api/ proxying. Also update CORS in FastAPI to allow the nginx origin.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Test the full docker-compose stack",
+      "details": "Run docker-compose up --build in src/. Access http://localhost:3001. Verify: sign up works, login works, weight entries can be logged. Check browser network tab to confirm /api/* requests go to localhost:3001 (same origin) and return correct responses.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-17", "TASK-3"],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "In docker-compose, services communicate by service name — 'api' resolves to the API container",
+    "Without try_files, direct navigation to /dashboard would return 404 from nginx"
+  ]
+}

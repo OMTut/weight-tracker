@@ -1,0 +1,47 @@
+{
+  "id": "TASK-20",
+  "title": "Sign in page",
+  "category": "ui-ux",
+  "description": "Build the login page at /login with email and password fields. On success, store the JWT and redirect to /dashboard.",
+  "acceptanceCriteria": [
+    "Page renders a centered card with email and password fields and a Sign In button",
+    "Form shows inline validation errors for empty/invalid email and empty password",
+    "Submit button shows loading state while API call is in progress",
+    "Successful login stores JWT in localStorage and redirects to /dashboard",
+    "Invalid credentials shows error message 'Invalid email or password'",
+    "Page includes a link to /signup for new users",
+    "Layout is centered and mobile-friendly",
+    "Verify in browser using Playwright"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Create the LoginPage component",
+      "details": "Create src/web/src/pages/LoginPage.tsx. Use same centered card layout as SignupPage. App name/title at top of card.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Build the form with React Hook Form and Zod",
+      "details": "Zod schema: z.object({ email: z.string().email('Invalid email'), password: z.string().min(1, 'Password is required') }). Use useForm with zodResolver. Render email and password Input components with error messages. Submit button shows loading during submission.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Handle form submission",
+      "details": "onSubmit: call login(email, password) from apiService. On success: call auth.login(response.access_token, response.user), navigate to /dashboard. On 401 error: show 'Invalid email or password' message. On other errors: show 'Something went wrong, please try again'.",
+      "pass": false
+    },
+    {
+      "step": 4,
+      "description": "Add link to signup and verify with Playwright",
+      "details": "Add 'Don't have an account? Sign up' link pointing to /signup. Take Playwright screenshot. Verify redirect to /dashboard after successful login. Verify error message on wrong password.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-19"],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "Reuse the same card layout pattern from SignupPage for visual consistency"
+  ]
+}

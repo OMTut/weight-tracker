@@ -1,0 +1,42 @@
+{
+  "id": "TASK-2",
+  "title": "Create SQLite database schema for weight_entries table",
+  "category": "data-model",
+  "description": "Define and initialize the weight_entries table using SQLAlchemy ORM. This table stores all weight log entries per user.",
+  "acceptanceCriteria": [
+    "weight_entries table exists with all required columns",
+    "id column is a UUID string primary key",
+    "user_id column is a foreign key referencing users.id with ON DELETE CASCADE",
+    "weight_value column is a Float and must be positive (validated at API layer)",
+    "recorded_at column is a Date (not DateTime) — stores only the calendar date",
+    "created_at column defaults to current UTC datetime",
+    "Table is created automatically on app startup if it doesn't exist"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Create the WeightEntry model",
+      "details": "Create src/api/models/weight_entry.py. Define class WeightEntry(Base) with __tablename__ = 'weight_entries'. Columns: id (String primary key, default=lambda: str(uuid.uuid4())), user_id (String, ForeignKey('users.id', ondelete='CASCADE'), nullable=False, index=True), weight_value (Float, nullable=False), recorded_at (Date, nullable=False), created_at (DateTime, default=datetime.utcnow). Add relationship back to User model.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Register the model with Base metadata",
+      "details": "In src/api/main.py (or a models __init__.py), import WeightEntry so SQLAlchemy registers it with Base.metadata before create_all() is called. Without this import, the table won't be created.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Verify table creation and foreign key",
+      "details": "Run the app and verify: 'weight_entries' table exists in db.sqlite, run 'PRAGMA table_info(weight_entries)' to confirm columns, run 'PRAGMA foreign_key_list(weight_entries)' to confirm FK to users.id with CASCADE.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-1"],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "SQLite foreign key enforcement requires 'PRAGMA foreign_keys = ON' to be set per connection — add this to SQLAlchemy engine events if cascade deletes are critical",
+    "Use Date type (not DateTime) for recorded_at since we only store the calendar date of the entry",
+    "Index user_id for faster queries when filtering entries by user"
+  ]
+}

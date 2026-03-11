@@ -1,0 +1,49 @@
+{
+  "id": "TASK-19",
+  "title": "Sign up page",
+  "category": "ui-ux",
+  "description": "Build the user registration page at /signup with a centered card form containing name, email, and password fields. On success, store the JWT and redirect to /dashboard.",
+  "acceptanceCriteria": [
+    "Page renders a centered card with the app name, name/email/password fields, and a Sign Up button",
+    "Form shows inline validation errors for: empty name, invalid email format, password shorter than 8 characters",
+    "Submit button shows a loading state while the API call is in progress",
+    "Successful signup stores the JWT in localStorage and redirects to /dashboard",
+    "API error (e.g. duplicate email) is shown as a toast or error message below the form",
+    "Page includes a link to /login for existing users",
+    "Layout is centered and mobile-friendly",
+    "Verify in browser using Playwright"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Create the SignupPage component",
+      "details": "Create src/web/src/pages/SignupPage.tsx. Use shadcn/ui Card, CardHeader, CardContent components for the layout. Center on screen with min-h-screen flex items-center justify-center.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Build the form with React Hook Form and Zod",
+      "details": "Define a Zod schema: z.object({ name: z.string().min(1, 'Name is required'), email: z.string().email('Invalid email'), password: z.string().min(8, 'Password must be at least 8 characters') }). Use useForm with zodResolver. Render Input components for each field with error messages below each input. Show a loading spinner in the Submit button while isSubmitting is true.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Handle form submission",
+      "details": "In the onSubmit handler: call register(name, email, password) from apiService. On success: call auth.login(response.access_token, response.user) from AuthContext, navigate to /dashboard. On error: show error message (e.g. 'An account with this email already exists') using state variable displayed below the submit button.",
+      "pass": false
+    },
+    {
+      "step": 4,
+      "description": "Add link to login and verify UI with Playwright",
+      "details": "Add 'Already have an account? Log in' link pointing to /login. Take a Playwright screenshot of the signup page. Verify the form renders correctly on mobile (375px). Verify form validation messages appear on submit with empty fields.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-18"],
+  "estimatedComplexity": "medium",
+  "technicalNotes": [
+    "Use useAuth() hook from AuthContext for the login() function",
+    "Disable the submit button while isSubmitting to prevent double-submit",
+    "Show generic error message on unexpected API errors, specific messages for known errors (duplicate email)"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "id": "TASK-1",
+  "title": "Create SQLite database schema for users table",
+  "category": "data-model",
+  "description": "Define and initialize the users table in SQLite using SQLAlchemy ORM. This is the foundation for authentication and account management.",
+  "acceptanceCriteria": [
+    "Users table exists in the SQLite database with all required columns",
+    "id column is a UUID string primary key",
+    "email column has a UNIQUE constraint",
+    "weight_unit column defaults to 'lbs' and only accepts 'lbs' or 'kg'",
+    "created_at column defaults to current UTC datetime",
+    "Database file is created at /app/data/db.sqlite on startup",
+    "Table is created automatically on app startup if it doesn't exist"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Create the database module with SQLAlchemy engine and session",
+      "details": "Create src/api/database.py. Define DATABASE_URL from environment variable (default: 'sqlite:////app/data/db.sqlite'). Create SQLAlchemy engine with connect_args={'check_same_thread': False} for SQLite. Create SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine). Create Base = declarative_base(). Add get_db() dependency function that yields a session and closes it after use.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Create the User model",
+      "details": "Create src/api/models/user.py. Define class User(Base) with __tablename__ = 'users'. Columns: id (String primary key, default=lambda: str(uuid.uuid4())), email (String(255), unique=True, nullable=False, index=True), name (String(255), nullable=False), hashed_password (Text, nullable=False), weight_unit (String(3), nullable=False, default='lbs'), created_at (DateTime, default=datetime.utcnow). Import uuid and datetime.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Initialize database tables on app startup",
+      "details": "In src/api/main.py, import Base and engine from database module. Call Base.metadata.create_all(bind=engine) on app startup. Use @app.on_event('startup') or a lifespan context manager. Ensure the /app/data directory exists before creating the engine (use os.makedirs('/app/data', exist_ok=True)).",
+      "pass": false
+    },
+    {
+      "step": 4,
+      "description": "Verify table creation",
+      "details": "Run the FastAPI app and use sqlite3 CLI or a Python script to verify: connect to db.sqlite, run '.tables' command, verify 'users' table exists, run 'PRAGMA table_info(users)' to confirm all columns and constraints.",
+      "pass": false
+    }
+  ],
+  "dependencies": [],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "SQLite requires check_same_thread=False when used with FastAPI due to threading model",
+    "Use String type for UUID since SQLite does not have a native UUID type",
+    "The /app/data directory must exist before SQLAlchemy creates the database file"
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "TASK-12",
+  "title": "PATCH /api/user/profile — update name and email",
+  "category": "api-endpoint",
+  "description": "Implement the endpoint to update the user's display name and/or email address.",
+  "acceptanceCriteria": [
+    "PATCH /api/user/profile updates name and/or email and returns updated UserResponse",
+    "Fields are optional — only provided fields are updated",
+    "Changing to an email already used by another account returns 400",
+    "Updated values are reflected in subsequent GET /api/auth/me calls",
+    "Returns 401 if no valid JWT provided"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Create user schemas and router",
+      "details": "Create src/api/schemas/user.py with UpdateProfileRequest(BaseModel): name (str | None = None, min_length=1), email (EmailStr | None = None). Create src/api/routers/user.py with APIRouter(prefix='/api/user', tags=['user']).",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Implement PATCH /profile endpoint",
+      "details": "In user router, add PATCH /profile route. Handler: if request.name is not None, set current_user.name = request.name. If request.email is not None, check no other user has that email (raise 400 if conflict), set current_user.email = request.email. Commit and refresh. Return UserResponse.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Register user router and test",
+      "details": "Add user router to main.py. Test: PATCH /api/user/profile with {\"name\": \"New Name\"} — verify name updated. PATCH with {\"email\": \"new@example.com\"} — verify email updated. PATCH with email of another existing user — verify 400. GET /api/auth/me — verify changes persisted.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-7"],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "Use Optional fields (None default) so clients can update only one field at a time",
+    "Check email uniqueness before updating to avoid constraint violations"
+  ]
+}

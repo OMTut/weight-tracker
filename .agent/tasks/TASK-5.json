@@ -1,0 +1,47 @@
+{
+  "id": "TASK-5",
+  "title": "POST /api/auth/register — create new user account",
+  "category": "api-endpoint",
+  "description": "Implement the user registration endpoint that accepts name, email, and password, creates a new user in the database, and returns a JWT token so the user is immediately logged in.",
+  "acceptanceCriteria": [
+    "POST /api/auth/register with valid data returns 201 with user object and access_token",
+    "Response does NOT include hashed_password",
+    "Duplicate email returns 400 with message 'Email already registered'",
+    "Missing required fields return 422 validation error",
+    "Password is stored as bcrypt hash, never plaintext",
+    "Newly created user can immediately log in with their credentials"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Create Pydantic schemas for auth",
+      "details": "Create src/api/schemas/auth.py. Define RegisterRequest(BaseModel) with fields: name (str, min_length=1), email (EmailStr), password (str, min_length=8). Define AuthResponse(BaseModel) with fields: access_token (str), token_type (str, default='bearer'), user (UserResponse). Define UserResponse(BaseModel) with fields: id (str), email (str), name (str), weight_unit (str). Use model_config = ConfigDict(from_attributes=True) on UserResponse.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Create the auth router and register endpoint",
+      "details": "Create src/api/routers/auth.py. Create APIRouter with prefix='/api/auth', tags=['auth']. Implement POST /register endpoint: accept RegisterRequest body, check if email already exists (query db for user with matching email, return 400 if found), hash password with hash_password(), create User model instance, add to db and commit, create JWT token with create_access_token({'sub': user.id}), return AuthResponse with token and UserResponse.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Register the auth router in main.py",
+      "details": "In src/api/main.py, import the auth router and call app.include_router(auth_router). Ensure it's included after the database initialization.",
+      "pass": false
+    },
+    {
+      "step": 4,
+      "description": "Test the endpoint",
+      "details": "Use curl or the FastAPI /docs page: POST to http://localhost:8000/api/auth/register with body {\"name\": \"Test User\", \"email\": \"test@example.com\", \"password\": \"password123\"}. Verify: status 201, response contains access_token and user object, user.id is a UUID string, no hashed_password in response. Then POST again with same email and verify 400 error.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-1", "TASK-4"],
+  "estimatedComplexity": "medium",
+  "technicalNotes": [
+    "Use EmailStr from pydantic for email validation — requires pydantic[email] or email-validator package",
+    "Add email-validator to requirements.txt",
+    "Return 201 status code for successful creation using response_model and status_code=201 in the decorator"
+  ]
+}

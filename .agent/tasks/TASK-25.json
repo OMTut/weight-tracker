@@ -1,0 +1,40 @@
+{
+  "id": "TASK-25",
+  "title": "Table row actions — ... menu with Edit and Delete",
+  "category": "ui-ux",
+  "description": "Add the actions dropdown to each table row with Edit and Delete options, and wire up delete functionality.",
+  "acceptanceCriteria": [
+    "Each table row has a '...' button in the Actions column",
+    "Clicking '...' opens a dropdown with 'Edit' and 'Delete' options",
+    "Clicking 'Delete' immediately deletes the entry and refreshes the table",
+    "Clicking 'Edit' opens the edit flow (implemented in TASK-26)",
+    "Deleted entry is removed from the table without a page reload",
+    "Verify in browser using Playwright"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Add actions dropdown to each table row",
+      "details": "In WeightTable.tsx, replace the placeholder Actions cell with a DropdownMenu. DropdownMenuTrigger: Button variant='ghost' size='icon' with lucide-react MoreHorizontal icon (the '...' icon). DropdownMenuContent: DropdownMenuItem 'Edit' and DropdownMenuItem 'Delete' with className='text-red-600'.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Implement delete action",
+      "details": "In WeightTable.tsx, add handleDelete(id: string) function: call deleteWeightEntry(id) from apiService, on success call onEntryDeleted() prop and re-fetch the current page. Show a loading state on the specific row being deleted (track deletingId state). Handle error with a toast or alert.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Verify with Playwright",
+      "details": "Log weight entries, click '...' on a row, take screenshot of open dropdown. Click Delete — verify entry disappears from table. Verify table page count updates if the last entry on a page was deleted.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-24"],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "lucide-react MoreHorizontal is the standard '...' icon",
+    "Track which row is being deleted with deletingId state to show per-row loading states"
+  ]
+}

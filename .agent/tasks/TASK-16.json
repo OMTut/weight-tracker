@@ -1,0 +1,49 @@
+{
+  "id": "TASK-16",
+  "title": "Frontend — install and configure dependencies",
+  "category": "functional",
+  "description": "Install all required frontend packages and configure shadcn/ui, TailwindCSS, and React Router in the Vite project.",
+  "acceptanceCriteria": [
+    "shadcn/ui is initialized and components can be added via CLI",
+    "TailwindCSS is configured and utility classes apply correctly",
+    "React Router v6 is installed",
+    "Recharts is installed",
+    "React Hook Form and Zod are installed",
+    "Axios is installed",
+    "App compiles without TypeScript errors",
+    "npm run dev starts the dev server successfully"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Install dependencies",
+      "details": "In src/web/, run: npm install react-router-dom axios react-hook-form @hookform/resolvers zod recharts. Then run: npm install -D @types/react-router-dom.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Initialize shadcn/ui",
+      "details": "In src/web/, run: npx shadcn@latest init. When prompted: choose 'Default' style, 'Slate' as base color, use CSS variables for colors: yes. This will configure tailwind.config.js and create src/lib/utils.ts.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Add required shadcn/ui components",
+      "details": "Run: npx shadcn@latest add button input label card dropdown-menu dialog table select separator. These are all the components needed for the app.",
+      "pass": false
+    },
+    {
+      "step": 4,
+      "description": "Verify setup",
+      "details": "Run npm run dev in src/web/. Verify dev server starts on port 5173 (or configured port). Run npm run build to verify TypeScript compilation passes. Fix any import or type errors.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-3"],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "shadcn/ui init will modify tailwind.config.js — commit these changes",
+    "The web service in docker-compose serves the built app — use npm run dev for local development",
+    "Recharts types are included in the package — no @types/recharts needed"
+  ]
+}

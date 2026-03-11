@@ -1,0 +1,40 @@
+{
+  "id": "TASK-27",
+  "title": "Account Info page layout",
+  "category": "ui-ux",
+  "description": "Build the /account page with a back navigation to dashboard and sections for each account management action.",
+  "acceptanceCriteria": [
+    "Page has a header with a back arrow and 'Account Info' title",
+    "Clicking back navigates to /dashboard",
+    "Page contains distinct sections: Display Name, Email, Password, Weight Unit, Delete Account",
+    "Each section has a title and its own form/control",
+    "Page is mobile-friendly",
+    "Verify in browser using Playwright"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Create AccountPage component",
+      "details": "Create src/web/src/pages/AccountPage.tsx. Layout: full page with sticky top bar containing a back button (lucide-react ArrowLeft icon + useNavigate to /dashboard) and 'Account Info' title. Below: scrollable content area with max-w-lg mx-auto padding for centered content on large screens.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Add placeholder sections",
+      "details": "Add Card components for each section: 'Display Name', 'Email Address', 'Password', 'Weight Unit', 'Danger Zone' (for delete account). Each card has a CardHeader with title and CardContent for the form. Forms will be wired up in TASK-28 through TASK-32.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Verify with Playwright",
+      "details": "Navigate to /account. Take screenshot. Click back arrow — verify navigation to /dashboard. Verify all sections are visible. Verify mobile layout.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-21"],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "Use the same top bar style as the dashboard for visual consistency",
+    "The 'Danger Zone' delete section should use red/destructive colors from shadcn theme"
+  ]
+}

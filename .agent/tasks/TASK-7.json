@@ -1,0 +1,41 @@
+{
+  "id": "TASK-7",
+  "title": "JWT auth dependency — protect API endpoints",
+  "category": "security",
+  "description": "Create a reusable FastAPI dependency that extracts and validates the JWT from the Authorization header, returning the current authenticated user. All protected endpoints will use this dependency.",
+  "acceptanceCriteria": [
+    "get_current_user dependency extracts Bearer token from Authorization header",
+    "Valid token returns the User object from the database",
+    "Missing Authorization header returns 401",
+    "Invalid or expired token returns 401",
+    "Token pointing to a deleted user returns 401",
+    "Protected endpoints return 401 when called without a token"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Create get_current_user dependency",
+      "details": "Create src/api/dependencies/auth.py. Import HTTPBearer and HTTPAuthorizationCredentials from fastapi.security, HTTPException, Depends, db dependency, User model, and decode_access_token. Define security = HTTPBearer(). Implement get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security), db: Session = Depends(get_db)) -> User: call decode_access_token(credentials.credentials), extract user_id from payload['sub'], query db for User with that id, if not found raise HTTPException(401, 'User not found'), return the user.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Add GET /api/auth/me endpoint",
+      "details": "In src/api/routers/auth.py, add GET /me endpoint with Depends(get_current_user). Return UserResponse from the current user. This endpoint verifies the full auth flow works end-to-end.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Test the dependency",
+      "details": "Login to get a token, then: GET http://localhost:8000/api/auth/me with Authorization: Bearer <token> — should return user object. GET same endpoint with no Authorization header — should return 401. GET with 'Bearer invalidtoken' — should return 401.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-6"],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "Use HTTPBearer() (not OAuth2PasswordBearer) for simpler Bearer token extraction",
+    "Wrap decode_access_token in try/except JWTError and raise HTTPException(401) on failure",
+    "The 'sub' claim in the JWT payload contains the user's string UUID id"
+  ]
+}

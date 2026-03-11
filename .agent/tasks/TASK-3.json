@@ -1,0 +1,53 @@
+{
+  "id": "TASK-3",
+  "title": "FastAPI project structure and dependencies setup",
+  "category": "functional",
+  "description": "Establish the complete FastAPI project structure with all required dependencies, environment variable configuration, and update docker-compose.yaml to use SQLite instead of Postgres.",
+  "acceptanceCriteria": [
+    "requirements.txt includes all needed packages: fastapi, uvicorn, sqlalchemy, pydantic, python-jose[cryptography], passlib[bcrypt], python-dotenv",
+    "Project is organized into logical modules: models/, routers/, schemas/, dependencies/",
+    "docker-compose.yaml no longer references Postgres — only api and web services",
+    "SQLite data directory is mounted as a Docker volume for persistence",
+    "App starts successfully with docker-compose up",
+    "GET /health returns {\"status\": \"ok\"}"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Update requirements.txt with all dependencies",
+      "details": "Update src/api/requirements.txt to include: fastapi==0.115.x, uvicorn==0.32.x, sqlalchemy==2.0.x, pydantic==2.x, python-jose[cryptography]==3.3.x, passlib[bcrypt]==1.7.x, python-dotenv==1.0.x. Pin to compatible versions.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Create project directory structure",
+      "details": "Create the following directories and __init__.py files in src/api/: models/ (for SQLAlchemy models), routers/ (for FastAPI route handlers), schemas/ (for Pydantic request/response schemas), dependencies/ (for FastAPI Depends functions like get_db, get_current_user).",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Update docker-compose.yaml to remove Postgres and add SQLite volume",
+      "details": "In src/docker-compose.yaml: remove the 'db' service entirely, remove the postgres_data volume, remove depends_on db from api service, remove DATABASE_URL env var from api service (or update to sqlite path), add a named volume 'sqlite_data' mapped to /app/data in the api service. Add environment variable DATABASE_URL=sqlite:////app/data/db.sqlite to the api service.",
+      "pass": false
+    },
+    {
+      "step": 4,
+      "description": "Update Dockerfile for the API",
+      "details": "In src/api/Dockerfile, ensure the /app/data directory is created with RUN mkdir -p /app/data. Verify the CMD starts uvicorn correctly: CMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]. Check the Dockerfile exists and works.",
+      "pass": false
+    },
+    {
+      "step": 5,
+      "description": "Verify the app starts with docker-compose",
+      "details": "Run 'docker-compose up --build' in the src/ directory. Verify: no Postgres connection errors, API container starts and logs 'Application startup complete', GET http://localhost:8000/health returns {\"status\": \"ok\"}.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-1", "TASK-2"],
+  "estimatedComplexity": "medium",
+  "technicalNotes": [
+    "SQLite database path uses 4 slashes for absolute path: sqlite:////app/data/db.sqlite",
+    "The api Dockerfile must create /app/data or the database file creation will fail",
+    "docker-compose volumes persist between container restarts — the SQLite file won't be lost on restart"
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "id": "TASK-13",
+  "title": "PATCH /api/user/password — update user password",
+  "category": "api-endpoint",
+  "description": "Implement the endpoint to change the user's password. Requires the current password for verification.",
+  "acceptanceCriteria": [
+    "PATCH /api/user/password with correct current_password and new_password returns 200",
+    "Wrong current_password returns 400 with message 'Current password is incorrect'",
+    "New password must be at least 8 characters — shorter returns 422",
+    "Password is stored as bcrypt hash after update",
+    "User can log in with the new password after update",
+    "Returns 401 if no valid JWT provided"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Create UpdatePasswordRequest schema",
+      "details": "In src/api/schemas/user.py, add UpdatePasswordRequest(BaseModel) with: current_password (str), new_password (str, min_length=8).",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Implement PATCH /password endpoint",
+      "details": "In user router, add PATCH /password route. Handler: call verify_password(request.current_password, current_user.hashed_password), if False raise HTTPException(400, 'Current password is incorrect'), hash new password with hash_password(request.new_password), set current_user.hashed_password to new hash, commit. Return {\"message\": \"Password updated successfully\"}.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Test the endpoint",
+      "details": "PATCH /api/user/password with correct current and new password — verify 200. Try logging in with new password — verify success. PATCH with wrong current password — verify 400. PATCH with new_password less than 8 chars — verify 422.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-12"],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "Always verify current password before allowing password change",
+    "Never return the hashed password in the response"
+  ]
+}

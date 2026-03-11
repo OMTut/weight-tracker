@@ -1,0 +1,39 @@
+{
+  "id": "TASK-15",
+  "title": "DELETE /api/user/me — delete account and all data",
+  "category": "api-endpoint",
+  "description": "Implement the endpoint to permanently delete the current user's account and all associated weight entries.",
+  "acceptanceCriteria": [
+    "DELETE /api/user/me returns 204 on success",
+    "User record is removed from the database",
+    "All weight entries for that user are also deleted (cascade)",
+    "The deleted user's JWT is no longer valid after deletion",
+    "Returns 401 if no valid JWT provided"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Implement DELETE /me endpoint",
+      "details": "In user router, add DELETE /me route with response_code=204. Handler: db.delete(current_user), db.commit(). Weight entries are deleted via cascade (defined on the FK). Return Response(status_code=204).",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Enable SQLite foreign key cascade enforcement",
+      "details": "In src/api/database.py, add an event listener to enable foreign keys on each connection: from sqlalchemy import event; @event.listens_for(engine, 'connect') def set_sqlite_pragma(dbapi_connection, connection_record): cursor = dbapi_connection.cursor(); cursor.execute('PRAGMA foreign_keys=ON'); cursor.close(). This is required for CASCADE DELETE to work in SQLite.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Test the endpoint",
+      "details": "Create a user, add 3 weight entries, then DELETE /api/user/me with their JWT. Verify: status 204. Then GET /api/auth/me with the same token — verify 401. Query the database and verify no weight_entries exist for that user_id.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-11", "TASK-12"],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "SQLite requires PRAGMA foreign_keys=ON per connection for cascade deletes to work — this is a common SQLite gotcha",
+    "After deletion, the JWT still contains a valid user_id but the user no longer exists — GET /api/auth/me will return 401 because the user lookup fails"
+  ]
+}

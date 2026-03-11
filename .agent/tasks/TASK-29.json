@@ -1,0 +1,40 @@
+{
+  "id": "TASK-29",
+  "title": "Account page — change email form",
+  "category": "ui-ux",
+  "description": "Wire up the Email Address section on the Account page so users can update their email.",
+  "acceptanceCriteria": [
+    "Email section shows a text input pre-filled with the current user email",
+    "Saving calls PATCH /api/user/profile and updates the email in AuthContext",
+    "Invalid email format shows validation error",
+    "Email already used by another account shows error 'Email already in use'",
+    "Save button shows loading state during API call",
+    "Success shows confirmation message",
+    "Verify in browser using Playwright"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Build the email form",
+      "details": "Similar to display name form. Zod schema: z.object({ email: z.string().email('Invalid email format') }). Pre-fill with user.email. Same loading and success pattern as TASK-28.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Handle submission and error",
+      "details": "onSubmit: call updateProfile({ email }) from apiService. On success: call updateUser() with updated user. On 400 error: show 'Email already in use'. On success, show 'Email updated' confirmation.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Verify with Playwright",
+      "details": "Change email to a new valid email — verify success. Try changing to an invalid format — verify validation error. Try registering a second account and then changing first account's email to the second account's email — verify 'Email already in use' error.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-28"],
+  "estimatedComplexity": "low",
+  "technicalNotes": [
+    "Reuse the same form pattern established in TASK-28 for consistency"
+  ]
+}

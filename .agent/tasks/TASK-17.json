@@ -1,0 +1,40 @@
+{
+  "id": "TASK-17",
+  "title": "Frontend — API client with auth token management",
+  "category": "functional",
+  "description": "Create a typed Axios instance that automatically attaches the JWT from localStorage to all requests and handles 401 responses by redirecting to login.",
+  "acceptanceCriteria": [
+    "All API requests include Authorization: Bearer <token> header when token exists",
+    "Token is read from localStorage key 'auth_token'",
+    "401 responses automatically clear the token and redirect to /login",
+    "API client is typed with TypeScript for all request/response types",
+    "Base URL points to http://localhost:8000"
+  ],
+  "steps": [
+    {
+      "step": 1,
+      "description": "Create the Axios API client",
+      "details": "Create src/web/src/lib/api.ts. Create an Axios instance: const api = axios.create({ baseURL: 'http://localhost:8000' }). Add a request interceptor: before each request, get token from localStorage.getItem('auth_token'), if token exists set config.headers.Authorization = 'Bearer ' + token. Add a response interceptor: on 401 error, call localStorage.removeItem('auth_token') and window.location.href = '/login'.",
+      "pass": false
+    },
+    {
+      "step": 2,
+      "description": "Define TypeScript types for API responses",
+      "details": "Create src/web/src/types/api.ts. Define interfaces: User { id: string; email: string; name: string; weight_unit: 'lbs' | 'kg' }, AuthResponse { access_token: string; token_type: string; user: User }, WeightEntry { id: string; weight_value: number; recorded_at: string; created_at: string }, PaginatedWeightResponse { entries: WeightEntry[]; total: number; page: number; page_size: number; total_pages: number }.",
+      "pass": false
+    },
+    {
+      "step": 3,
+      "description": "Create typed API service functions",
+      "details": "Create src/web/src/lib/apiService.ts. Export functions: login(email, password) -> Promise<AuthResponse>, register(name, email, password) -> Promise<AuthResponse>, getMe() -> Promise<User>, getWeightEntries(params: {page, time_filter}) -> Promise<PaginatedWeightResponse>, createWeightEntry(weight_value) -> Promise<WeightEntry>, updateWeightEntry(id, weight_value) -> Promise<WeightEntry>, deleteWeightEntry(id) -> Promise<void>, updateProfile(data) -> Promise<User>, updatePassword(current, new) -> Promise<void>, updatePreferences(weight_unit) -> Promise<User>, deleteAccount() -> Promise<void>.",
+      "pass": false
+    }
+  ],
+  "dependencies": ["TASK-16"],
+  "estimatedComplexity": "medium",
+  "technicalNotes": [
+    "Store JWT in localStorage key 'auth_token'",
+    "The 401 interceptor provides automatic logout when token expires",
+    "Use import.meta.env.VITE_API_URL for the base URL to allow environment-specific configuration"
+  ]
+}
