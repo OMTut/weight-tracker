@@ -6,6 +6,8 @@ services:
       - "8000:8000"
     environment:
       DATABASE_URL: sqlite:////app/data/db.sqlite
+      # IMPORTANT: Change SECRET_KEY to a strong random value in any real deployment
+      SECRET_KEY: dev-secret-change-in-production
     volumes:
       - sqlite_data:/app/data
 

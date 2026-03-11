@@ -10,6 +10,12 @@
 
 ## Session Log
 
+### 2026-03-11 — TASK-4: JWT token utility and password hashing setup
+
+- Created `src/api/dependencies/security.py` with hash_password/verify_password (using bcrypt directly, bypassing passlib incompatibility with bcrypt 5.x) and create_access_token/decode_access_token (python-jose HS256, 30-day expiry, SECRET_KEY from env)
+- Added SECRET_KEY env var to src/docker-compose.yaml api service
+- All 11 tests pass (6 new security tests + 5 existing)
+
 ### 2026-03-11 — TASK-3: FastAPI project structure and dependencies setup
 
 - Updated requirements.txt: added python-jose[cryptography]==3.3.0, passlib[bcrypt]==1.7.4, python-dotenv==1.0.1; pinned fastapi==0.115.12, uvicorn==0.32.1
