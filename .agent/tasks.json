@@ -130,7 +130,7 @@
     "title": "Sign up page",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-19.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-20",
