@@ -10,6 +10,13 @@
 
 ## Session Log
 
+### 2026-03-12 — TASK-25: Table row actions — ... menu with Edit and Delete
+
+- Updated `src/web/src/components/WeightTable.tsx`: replaced placeholder "..." button with `DropdownMenu` containing `MoreHorizontal` icon trigger, "Edit" and "Delete" menu items; added `handleDelete` async function (tracks `deletingId` state for per-row loading, calls `deleteWeightEntry`, notifies parent via `onEntryDeleted`, re-fetches current page, adjusts page if now empty)
+- Created `src/tests/table-actions.spec.ts`: 2 Playwright E2E tests (dropdown opens with Edit/Delete, clicking Delete removes entry)
+- Screenshots: TASK-25-1 (open dropdown), TASK-25-2 (after delete — empty state)
+- All 24 E2E tests pass (1 unrelated flaky); TypeScript clean; ESLint clean
+
 ### 2026-03-12 — TASK-24: Weight table with pagination
 
 - Created `src/web/src/components/WeightTable.tsx`: paginated table with Date (DD.MM.YYYY), Weight (with unit), and Actions columns; null entries sentinel for initial loading; page reset on refreshKey via ref to avoid synchronous setState in effects

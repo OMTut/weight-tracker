@@ -1,9 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import { format, parseISO } from "date-fns";
+import { MoreHorizontal } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import { getWeightEntries } from "@/lib/apiService";
+import { getWeightEntries, deleteWeightEntry } from "@/lib/apiService";
 import type { WeightEntry } from "@/types/api";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -34,6 +41,7 @@ export function WeightTable({
   const [entries, setEntries] = useState<WeightEntry[] | null>(null);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const lastRefreshKeyRef = useRef(refreshKey);
 
   useEffect(() => {
@@ -61,6 +69,33 @@ export function WeightTable({
       cancelled = true;
     };
   }, [page, refreshKey]);
+
+  /**
+   * Deletes the entry with the given id, then refreshes the current page.
+   * Notifies the parent via onEntryDeleted so the chart can also refresh.
+   */
+  async function handleDelete(id: string) {
+    setDeletingId(id);
+    try {
+      await deleteWeightEntry(id);
+      onEntryDeleted();
+      const res = await getWeightEntries({
+        page,
+        page_size: 10,
+        time_filter: "all",
+      });
+      setEntries(res.entries);
+      const newTotalPages = res.total_pages === 0 ? 1 : res.total_pages;
+      setTotalPages(newTotalPages);
+      if (page > newTotalPages) {
+        setPage(newTotalPages);
+      }
+    } catch {
+      // Silently ignore — table will refresh on next interaction
+    } finally {
+      setDeletingId(null);
+    }
+  }
 
   return (
     <div className="rounded-lg border" data-testid="weight-table">
@@ -102,19 +137,35 @@ export function WeightTable({
                   {entry.weight_value} {user?.weight_unit ?? "lbs"}
                 </TableCell>
                 <TableCell>
-                  {/* Actions menu placeholder — implemented in TASK-25 */}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    data-testid={`actions-menu-${entry.id}`}
-                    aria-label="Entry actions"
-                    onClick={() => {
-                      void onEntryUpdated;
-                      void onEntryDeleted;
-                    }}
-                  >
-                    ...
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        data-testid={`actions-menu-${entry.id}`}
+                        aria-label="Entry actions"
+                        disabled={deletingId === entry.id}
+                      >
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        data-testid={`edit-entry-${entry.id}`}
+                        onClick={() => onEntryUpdated()}
+                      >
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="text-red-600"
+                        data-testid={`delete-entry-${entry.id}`}
+                        disabled={deletingId === entry.id}
+                        onClick={() => void handleDelete(entry.id)}
+                      >
+                        {deletingId === entry.id ? "Deleting…" : "Delete"}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </TableCell>
               </TableRow>
             ))

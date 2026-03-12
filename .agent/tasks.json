@@ -172,7 +172,7 @@
     "title": "Table row actions — ... menu with Edit and Delete",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-25.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-26",
