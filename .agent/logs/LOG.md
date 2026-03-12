@@ -10,6 +10,14 @@
 
 ## Session Log
 
+### 2026-03-12 — TASK-28: Account page — change display name form
+
+- Added `updateUser(user: User)` method to `AuthContext` to allow updating user state after profile changes
+- Updated `src/web/src/pages/AccountPage.tsx`: Display Name card now has a real form — Input pre-filled with `user.name`, validation ("Name is required" on empty), Save button with loading state, 2-second auto-dismissing "Saved!" success message; calls `updateProfile({ name })` on submit and `updateUser()` to sync context
+- Created `src/tests/account-name.spec.ts`: 4 Playwright E2E tests (pre-fill, empty validation, save → success + dashboard update, screenshot)
+- Screenshot: TASK-28-1 (success state after save)
+- All 37 E2E tests pass; TypeScript clean; ESLint clean
+
 ### 2026-03-12 — TASK-27: Account Info page layout
 
 - `src/web/src/pages/AccountPage.tsx` already implemented: sticky top bar with back arrow + "Account Info" title, 5 card sections (Display Name, Email Address, Password, Weight Unit, Danger Zone with destructive color)

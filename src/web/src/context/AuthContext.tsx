@@ -14,6 +14,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (token: string, user: User) => void;
   logout: () => void;
+  updateUser: (user: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -50,8 +51,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     navigate({ to: "/login" });
   }
 
+  /** Update the current user in context after a profile change. */
+  function updateUser(u: User) {
+    setUser(u);
+  }
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, isLoading, login, logout, updateUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

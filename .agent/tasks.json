@@ -193,7 +193,7 @@
     "title": "Account page — change display name form",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-28.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-29",
