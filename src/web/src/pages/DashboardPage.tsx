@@ -4,6 +4,7 @@ import { ChevronDown, Plus, X } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { WeightEntryForm } from "@/components/WeightEntryForm";
 import { WeightChart } from "@/components/WeightChart";
+import { WeightTable } from "@/components/WeightTable";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -73,8 +74,13 @@ export function DashboardPage() {
       )}
 
       {/* Main content area */}
-      <main className="flex-1 overflow-y-auto p-4">
+      <main className="flex-1 overflow-y-auto p-4 space-y-4">
         <WeightChart refreshKey={refreshKey} />
+        <WeightTable
+          refreshKey={refreshKey}
+          onEntryUpdated={() => setRefreshKey((k) => k + 1)}
+          onEntryDeleted={() => setRefreshKey((k) => k + 1)}
+        />
       </main>
     </div>
   );

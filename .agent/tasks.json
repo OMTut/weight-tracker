@@ -165,7 +165,7 @@
     "title": "Weight table with pagination",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-24.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-25",

@@ -1,0 +1,153 @@
+import { useEffect, useRef, useState } from "react";
+import { format, parseISO } from "date-fns";
+import { useAuth } from "@/context/AuthContext";
+import { getWeightEntries } from "@/lib/apiService";
+import type { WeightEntry } from "@/types/api";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+interface WeightTableProps {
+  refreshKey: number;
+  onEntryUpdated: () => void;
+  onEntryDeleted: () => void;
+}
+
+/**
+ * Paginated weight entries table with Date, Weight, and Actions columns.
+ * entries === null means initial load is in progress.
+ * Fetches 10 entries per page and shows pagination controls.
+ */
+export function WeightTable({
+  refreshKey,
+  onEntryUpdated,
+  onEntryDeleted,
+}: WeightTableProps) {
+  const { user } = useAuth();
+  // null = loading (initial only), [] = loaded empty, [...] = has data
+  const [entries, setEntries] = useState<WeightEntry[] | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const lastRefreshKeyRef = useRef(refreshKey);
+
+  useEffect(() => {
+    const isRefresh = lastRefreshKeyRef.current !== refreshKey;
+    lastRefreshKeyRef.current = refreshKey;
+    // On refresh (new entry added), always fetch page 1
+    const fetchPage = isRefresh ? 1 : page;
+
+    let cancelled = false;
+    getWeightEntries({ page: fetchPage, page_size: 10, time_filter: "all" })
+      .then((res) => {
+        if (!cancelled) {
+          setEntries(res.entries);
+          setTotalPages(res.total_pages === 0 ? 1 : res.total_pages);
+          // Sync page state to 1 after fetching page 1 on refresh
+          if (isRefresh && fetchPage !== page) {
+            setPage(1);
+          }
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setEntries([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [page, refreshKey]);
+
+  return (
+    <div className="rounded-lg border" data-testid="weight-table">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Date</TableHead>
+            <TableHead>Weight</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {entries === null ? (
+            <TableRow>
+              <TableCell
+                colSpan={3}
+                className="text-muted-foreground text-center"
+              >
+                Loading…
+              </TableCell>
+            </TableRow>
+          ) : entries.length === 0 ? (
+            <TableRow>
+              <TableCell
+                colSpan={3}
+                className="text-muted-foreground text-center"
+                data-testid="table-empty"
+              >
+                No entries yet
+              </TableCell>
+            </TableRow>
+          ) : (
+            entries.map((entry) => (
+              <TableRow key={entry.id} data-testid="table-row">
+                <TableCell>
+                  {format(parseISO(entry.recorded_at), "dd.MM.yyyy")}
+                </TableCell>
+                <TableCell>
+                  {entry.weight_value} {user?.weight_unit ?? "lbs"}
+                </TableCell>
+                <TableCell>
+                  {/* Actions menu placeholder — implemented in TASK-25 */}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    data-testid={`actions-menu-${entry.id}`}
+                    aria-label="Entry actions"
+                    onClick={() => {
+                      void onEntryUpdated;
+                      void onEntryDeleted;
+                    }}
+                  >
+                    ...
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))
+          )}
+        </TableBody>
+      </Table>
+
+      {/* Pagination controls */}
+      <div className="flex items-center justify-between border-t px-4 py-2">
+        <span className="text-muted-foreground text-sm" data-testid="page-info">
+          Page {page} of {totalPages}
+        </span>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={page === 1}
+            onClick={() => setPage((p) => p - 1)}
+            data-testid="prev-page"
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={page === totalPages}
+            onClick={() => setPage((p) => p + 1)}
+            data-testid="next-page"
+          >
+            Next
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}

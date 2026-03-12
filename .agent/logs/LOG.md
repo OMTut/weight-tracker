@@ -10,6 +10,15 @@
 
 ## Session Log
 
+### 2026-03-12 — TASK-24: Weight table with pagination
+
+- Created `src/web/src/components/WeightTable.tsx`: paginated table with Date (DD.MM.YYYY), Weight (with unit), and Actions columns; null entries sentinel for initial loading; page reset on refreshKey via ref to avoid synchronous setState in effects
+- Updated `src/web/src/pages/DashboardPage.tsx`: added WeightTable below WeightChart, passing refreshKey and callbacks
+- Installed `date-fns` for ISO date parsing and formatting
+- Created `src/tests/weight-table.spec.ts`: 4 Playwright E2E tests (empty state, table columns/formatting, pagination controls, Next disabled on last page)
+- Screenshots: TASK-24-1 (table with entry), TASK-24-2 (pagination)
+- All 22 E2E tests pass; TypeScript clean; ESLint clean
+
 ### 2026-03-12 — TASK-23: Weight area chart with time filter toggle
 
 - Created `src/web/src/components/WeightChart.tsx`: responsive Recharts area chart with 4 time-filter buttons (7d/30d/3m/all), empty state, loading state using `null` sentinel
