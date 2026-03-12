@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { ChevronDown, Plus, X } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { WeightEntryForm } from "@/components/WeightEntryForm";
+import { WeightChart } from "@/components/WeightChart";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -73,10 +74,7 @@ export function DashboardPage() {
 
       {/* Main content area */}
       <main className="flex-1 overflow-y-auto p-4">
-        {/* refreshKey will be passed to chart/table in later tasks */}
-        <p className="text-muted-foreground text-sm" data-refresh={refreshKey}>
-          Weight entries will appear here.
-        </p>
+        <WeightChart refreshKey={refreshKey} />
       </main>
     </div>
   );

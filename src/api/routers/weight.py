@@ -19,7 +19,7 @@ def list_weight_entries(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
     page: int = Query(1, ge=1),
-    page_size: int = Query(10, ge=1, le=100),
+    page_size: int = Query(10, ge=1, le=1000),
     time_filter: str = Query("all"),
 ):
     """Return a paginated list of the current user's weight entries with optional time filter."""

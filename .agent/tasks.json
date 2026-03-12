@@ -158,7 +158,7 @@
     "title": "Weight area chart with time filter toggle",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-23.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-24",

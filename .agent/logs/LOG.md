@@ -10,6 +10,46 @@
 
 ## Session Log
 
+### 2026-03-12 — TASK-23: Weight area chart with time filter toggle
+
+- Created `src/web/src/components/WeightChart.tsx`: responsive Recharts area chart with 4 time-filter buttons (7d/30d/3m/all), empty state, loading state using `null` sentinel
+- Updated `src/web/src/pages/DashboardPage.tsx`: replaced placeholder with `<WeightChart refreshKey={refreshKey} />`
+- Updated `src/web/src/lib/apiService.ts`: added `page_size` param to `getWeightEntries`
+- Updated `src/api/routers/weight.py`: raised `page_size` max from 100 to 1000 to support chart fetching
+- Created `src/tests/weight-chart.spec.ts`: 4 Playwright E2E tests (empty state, filter buttons, chart renders after entry, filter switching)
+- Screenshots: TASK-23-1 (chart with data), TASK-23-2 (filter switch)
+- All 18 E2E tests pass; TypeScript clean; ESLint clean
+
+### 2026-03-12 — TASK-22: Weight entry form — revealed by + button
+
+- Created `src/web/src/components/WeightEntryForm.tsx`: inline form with weight input, unit label, Submit (loading state), Cancel; uses TanStack Form + z.coerce.number for validation
+- Updated `src/web/src/pages/DashboardPage.tsx`: + toggles to X when form open, conditionally renders WeightEntryForm, `refreshKey` state incremented on success for future chart/table refresh
+- Created `src/tests/weight-entry.spec.ts`: 3 Playwright E2E tests (toggle, cancel, successful submit hides form)
+- Screenshots: TASK-22-1 (form hidden), TASK-22-2 (form visible)
+- All 3 E2E tests pass cleanly; TypeScript clean
+
+### 2026-03-12 — TASK-21: Dashboard layout — top bar with username dropdown
+
+- Replaced `src/web/src/pages/DashboardPage.tsx` with sticky top-bar layout: Plus button (left), "HeavyDeets" (center), username DropdownMenu (right) with "Account Info" and "Logout" items
+- Created `src/tests/dashboard.spec.ts`: 4 Playwright E2E tests (top bar visible, dropdown options, Account Info → /account, Logout → /login + token cleared)
+- Screenshot: TASK-21-1 (desktop dashboard)
+- All 4 E2E tests pass; TypeScript clean
+
+### 2026-03-12 — TASK-20: Sign in page
+
+- Replaced `src/web/src/pages/LoginPage.tsx` with full form: shadcn Card, TanStack Form + Zod validators (email, password), loading state, 401 → "Invalid email or password" error
+- Fixed `src/web/src/lib/api.ts` 401 interceptor to skip redirect for auth endpoints (login/register) so credential errors are handled by the form
+- Created `src/tests/login.spec.ts`: 4 Playwright E2E tests (form render, validation, wrong credentials, successful login → /dashboard + token)
+- Screenshots: TASK-20-1 (desktop), TASK-20-2 (validation), TASK-20-3 (mobile)
+- All 7 E2E tests pass (4 login + 3 signup); TypeScript clean; ESLint clean
+
+### 2026-03-12 — TASK-19: Sign up page
+
+- Replaced `src/web/src/pages/SignupPage.tsx` with full form: shadcn Card layout, TanStack Form with Zod inline validators (name, email, password), loading state on submit, API error handling (duplicate email), "Log in" link
+- Created `src/tests/signup.spec.ts`: 3 Playwright E2E tests (renders form, validation errors, successful signup → /dashboard + token stored)
+- Screenshots: TASK-19-1 (desktop), TASK-19-2 (mobile 375px), TASK-19-3 (validation errors)
+- All 3 E2E tests pass; TypeScript clean; ESLint clean
+
 ### 2026-03-12 — TASK-18: Frontend — auth context, routing, and protected routes
 
 - Created `src/web/src/context/AuthContext.tsx`: `AuthProvider` with `user`, `isLoading`, `login()`, `logout()` — reads token from localStorage on mount, calls `getMe()` to restore session, uses `useNavigate` from TanStack Router for logout redirect
