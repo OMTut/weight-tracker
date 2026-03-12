@@ -221,7 +221,7 @@
     "title": "Account page — delete account with confirmation dialog",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-32.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-33",

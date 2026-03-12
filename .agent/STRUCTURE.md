@@ -15,6 +15,7 @@ weight-tracker/
 │   │   │   │   └── AuthContext.tsx  # Auth state, login/logout, session restore
 │   │   │   ├── components/
 │   │   │   │   ├── ProtectedRoute.tsx  # Redirects unauthenticated users to /login
+│   │   │   │   ├── account/         # Account page sub-components (DisplayNameForm, EmailForm, PasswordForm, WeightUnitForm, DeleteAccountCard)
 │   │   │   │   └── ui/              # shadcn/ui primitives
 │   │   │   ├── pages/
 │   │   │   │   ├── LoginPage.tsx    # Public — redirects auth'd users to /dashboard
