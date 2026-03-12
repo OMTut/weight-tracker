@@ -2,9 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { format, parseISO } from "date-fns";
 import { MoreHorizontal } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import { getWeightEntries, deleteWeightEntry } from "@/lib/apiService";
+import {
+  getWeightEntries,
+  deleteWeightEntry,
+  updateWeightEntry,
+} from "@/lib/apiService";
 import type { WeightEntry } from "@/types/api";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,6 +47,10 @@ export function WeightTable({
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingValue, setEditingValue] = useState("");
+  const [editError, setEditError] = useState<string | null>(null);
+  const [savingId, setSavingId] = useState<string | null>(null);
   const lastRefreshKeyRef = useRef(refreshKey);
 
   useEffect(() => {
@@ -97,6 +106,41 @@ export function WeightTable({
     }
   }
 
+  /** Validates the edited value and calls PUT /api/weight/{id} on success. */
+  async function handleSave(id: string) {
+    const parsed = parseFloat(editingValue);
+    if (!editingValue || isNaN(parsed) || parsed <= 0) {
+      setEditError("Enter a positive number");
+      return;
+    }
+    setSavingId(id);
+    setEditError(null);
+    try {
+      await updateWeightEntry(id, parsed);
+      setEditingId(null);
+      setEditingValue("");
+      onEntryUpdated();
+      const res = await getWeightEntries({
+        page,
+        page_size: 10,
+        time_filter: "all",
+      });
+      setEntries(res.entries);
+      setTotalPages(res.total_pages === 0 ? 1 : res.total_pages);
+    } catch {
+      setEditError("Failed to save. Try again.");
+    } finally {
+      setSavingId(null);
+    }
+  }
+
+  /** Exits edit mode without saving. */
+  function handleCancel() {
+    setEditingId(null);
+    setEditingValue("");
+    setEditError(null);
+  }
+
   return (
     <div className="rounded-lg border" data-testid="weight-table">
       <Table>
@@ -128,47 +172,103 @@ export function WeightTable({
               </TableCell>
             </TableRow>
           ) : (
-            entries.map((entry) => (
-              <TableRow key={entry.id} data-testid="table-row">
-                <TableCell>
-                  {format(parseISO(entry.recorded_at), "dd.MM.yyyy")}
-                </TableCell>
-                <TableCell>
-                  {entry.weight_value} {user?.weight_unit ?? "lbs"}
-                </TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        data-testid={`actions-menu-${entry.id}`}
-                        aria-label="Entry actions"
-                        disabled={deletingId === entry.id}
-                      >
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        data-testid={`edit-entry-${entry.id}`}
-                        onClick={() => onEntryUpdated()}
-                      >
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        className="text-red-600"
-                        data-testid={`delete-entry-${entry.id}`}
-                        disabled={deletingId === entry.id}
-                        onClick={() => void handleDelete(entry.id)}
-                      >
-                        {deletingId === entry.id ? "Deleting…" : "Delete"}
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))
+            entries.map((entry) => {
+              const isEditing = editingId === entry.id;
+              return (
+                <TableRow key={entry.id} data-testid="table-row">
+                  <TableCell>
+                    {format(parseISO(entry.recorded_at), "dd.MM.yyyy")}
+                  </TableCell>
+                  <TableCell>
+                    {isEditing ? (
+                      <div className="flex flex-col gap-1">
+                        <Input
+                          type="number"
+                          step="0.1"
+                          min="0.1"
+                          autoFocus
+                          value={editingValue}
+                          onChange={(e) => {
+                            setEditingValue(e.target.value);
+                            setEditError(null);
+                          }}
+                          data-testid="edit-weight-input"
+                          className="w-28"
+                        />
+                        {editError && (
+                          <span
+                            className="text-destructive text-xs"
+                            data-testid="edit-error"
+                          >
+                            {editError}
+                          </span>
+                        )}
+                      </div>
+                    ) : (
+                      <>
+                        {entry.weight_value} {user?.weight_unit ?? "lbs"}
+                      </>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {isEditing ? (
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          data-testid="save-edit"
+                          disabled={savingId === entry.id}
+                          onClick={() => void handleSave(entry.id)}
+                        >
+                          {savingId === entry.id ? "Saving…" : "Save"}
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          data-testid="cancel-edit"
+                          onClick={handleCancel}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    ) : (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            data-testid={`actions-menu-${entry.id}`}
+                            aria-label="Entry actions"
+                            disabled={deletingId === entry.id}
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            data-testid={`edit-entry-${entry.id}`}
+                            onClick={() => {
+                              setEditingId(entry.id);
+                              setEditingValue(String(entry.weight_value));
+                              setEditError(null);
+                            }}
+                          >
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="text-red-600"
+                            data-testid={`delete-entry-${entry.id}`}
+                            disabled={deletingId === entry.id}
+                            onClick={() => void handleDelete(entry.id)}
+                          >
+                            {deletingId === entry.id ? "Deleting…" : "Delete"}
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
+                  </TableCell>
+                </TableRow>
+              );
+            })
           )}
         </TableBody>
       </Table>

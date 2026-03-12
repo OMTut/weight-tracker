@@ -10,6 +10,13 @@
 
 ## Session Log
 
+### 2026-03-12 — TASK-26: Edit weight entry — inline form in table row
+
+- Updated `src/web/src/components/WeightTable.tsx`: added `editingId`, `editingValue`, `editError`, `savingId` state; Edit menu item sets editingId + prefills editingValue; edit mode renders `Input` (autoFocus) in Weight cell and Save/Cancel buttons in Actions cell; `handleSave` validates positive number, calls `updateWeightEntry`, re-fetches table; `handleCancel` clears state
+- Created `src/tests/edit-weight.spec.ts`: 4 Playwright E2E tests (edit mode + prefill, save updates value, cancel no change, invalid value shows error)
+- Screenshots: TASK-26-1 (input visible), TASK-26-2 (after save), TASK-26-3 (validation error)
+- All 28 E2E tests pass; TypeScript clean; ESLint clean
+
 ### 2026-03-12 — TASK-25: Table row actions — ... menu with Edit and Delete
 
 - Updated `src/web/src/components/WeightTable.tsx`: replaced placeholder "..." button with `DropdownMenu` containing `MoreHorizontal` icon trigger, "Edit" and "Delete" menu items; added `handleDelete` async function (tracks `deletingId` state for per-row loading, calls `deleteWeightEntry`, notifies parent via `onEntryDeleted`, re-fetches current page, adjusts page if now empty)

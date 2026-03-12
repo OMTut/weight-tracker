@@ -179,7 +179,7 @@
     "title": "Edit weight entry — inline form in table row",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-26.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-27",
