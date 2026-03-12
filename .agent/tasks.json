@@ -39,7 +39,7 @@
     "title": "POST /api/auth/login — authenticate user and return JWT",
     "category": "api-endpoint",
     "specFilePath": ".agent/tasks/TASK-6.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-7",

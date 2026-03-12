@@ -10,6 +10,13 @@
 
 ## Session Log
 
+### 2026-03-11 — TASK-6: POST /api/auth/login — authenticate user and return JWT
+
+- Added `LoginRequest` schema to `src/api/schemas/auth.py`
+- Implemented `POST /api/auth/login` in `src/api/routers/auth.py` with user enumeration-safe 401 errors
+- Created `src/api/tests/test_auth_login.py` with 4 tests (success, wrong password, unknown email, same error message)
+- All 20 tests pass
+
 ### 2026-03-11 — TASK-5: POST /api/auth/register — create new user account
 
 - Created `src/api/schemas/auth.py` with RegisterRequest, UserResponse, AuthResponse Pydantic schemas

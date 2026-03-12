@@ -1,6 +1,11 @@
 from pydantic import BaseModel, EmailStr, ConfigDict
 
 
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+
 class RegisterRequest(BaseModel):
     name: str
     email: EmailStr
