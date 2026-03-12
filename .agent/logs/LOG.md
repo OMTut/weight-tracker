@@ -10,6 +10,14 @@
 
 ## Session Log
 
+### 2026-03-11 — TASK-12: PATCH /api/user/profile — update name and email
+
+- Created `src/api/schemas/user.py` with `UpdateProfileRequest` (optional name/email fields)
+- Created `src/api/routers/user.py` with `PATCH /api/user/profile`: updates name and/or email, checks email uniqueness (400 on conflict), returns `UserResponse`
+- Registered user router in `main.py`
+- Created `src/api/tests/test_user_profile.py` with 6 tests (update name, update email, email conflict→400, persistence in /me, no token→403, same email no conflict)
+- All 55 tests pass
+
 ### 2026-03-11 — TASK-11: DELETE /api/weight/{id} — delete weight entry
 
 - Added `DELETE /{entry_id}` endpoint to `src/api/routers/weight.py`: validates ownership (404 if not found, 403 if wrong user), deletes entry, returns 204 No Content

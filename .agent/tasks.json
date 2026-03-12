@@ -81,7 +81,7 @@
     "title": "PATCH /api/user/profile — update name and email",
     "category": "api-endpoint",
     "specFilePath": ".agent/tasks/TASK-12.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-13",
