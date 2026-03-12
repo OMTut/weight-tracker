@@ -2,11 +2,18 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from database import get_db
+from dependencies.auth import get_current_user
 from dependencies.security import create_access_token, hash_password, verify_password
 from models.user import User
 from schemas.auth import AuthResponse, LoginRequest, RegisterRequest, UserResponse
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
+
+
+@router.get("/me", response_model=UserResponse)
+def get_me(current_user: User = Depends(get_current_user)):
+    """Return the currently authenticated user's profile."""
+    return UserResponse.model_validate(current_user)
 
 
 @router.post("/login", response_model=AuthResponse)

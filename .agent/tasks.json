@@ -46,7 +46,7 @@
     "title": "JWT auth dependency — protect API endpoints",
     "category": "security",
     "specFilePath": ".agent/tasks/TASK-7.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-8",

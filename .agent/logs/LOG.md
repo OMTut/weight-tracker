@@ -10,6 +10,14 @@
 
 ## Session Log
 
+### 2026-03-11 — TASK-7: JWT auth dependency — protect API endpoints
+
+- Created `src/api/dependencies/auth.py` with `get_current_user` dependency using `HTTPBearer`
+- Dependency extracts Bearer token, decodes JWT, queries DB for user, raises 401 on any failure
+- Added `GET /api/auth/me` endpoint to `src/api/routers/auth.py` that returns current user profile
+- Created `src/api/tests/test_auth_me.py` with 4 tests (success, no token → 403, invalid token → 401, deleted user → 401)
+- All 24 tests pass
+
 ### 2026-03-11 — TASK-6: POST /api/auth/login — authenticate user and return JWT
 
 - Added `LoginRequest` schema to `src/api/schemas/auth.py`
