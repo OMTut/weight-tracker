@@ -6,7 +6,7 @@ from dependencies.auth import get_current_user
 from dependencies.security import hash_password, verify_password
 from models.user import User
 from schemas.auth import UserResponse
-from schemas.user import UpdatePasswordRequest, UpdateProfileRequest
+from schemas.user import UpdatePasswordRequest, UpdatePreferencesRequest, UpdateProfileRequest
 
 router = APIRouter(prefix="/api/user", tags=["user"])
 
@@ -49,3 +49,16 @@ def update_password(
     current_user.hashed_password = hash_password(body.new_password)
     db.commit()
     return {"message": "Password updated successfully"}
+
+
+@router.patch("/preferences", response_model=UserResponse)
+def update_preferences(
+    body: UpdatePreferencesRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Update the current user's weight unit preference (lbs or kg)."""
+    current_user.weight_unit = body.weight_unit
+    db.commit()
+    db.refresh(current_user)
+    return UserResponse.model_validate(current_user)

@@ -10,6 +10,13 @@
 
 ## Session Log
 
+### 2026-03-12 — TASK-14: PATCH /api/user/preferences — update weight unit preference
+
+- Added `UpdatePreferencesRequest` schema to `src/api/schemas/user.py` with `weight_unit: Literal['lbs', 'kg']`
+- Added `PATCH /api/user/preferences` endpoint to `src/api/routers/user.py`: updates `weight_unit`, returns `UserResponse`
+- Created `src/api/tests/test_user_preferences.py` with 4 tests (kg→200, lbs→200, 'pounds'→422, no token→403)
+- All 64 tests pass
+
 ### 2026-03-11 — TASK-13: PATCH /api/user/password — update user password
 
 - Added `UpdatePasswordRequest` schema to `src/api/schemas/user.py` with `new_password (str, min_length=8)`
