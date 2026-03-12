@@ -13,13 +13,20 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-/** On 401, clear stored token and redirect to /login. */
+/**
+ * On 401, clear stored token and redirect to /login.
+ * Skip redirect for auth endpoints (login/register) where 401 = wrong credentials.
+ */
 api.interceptors.response.use(
   (response) => response,
   (error: unknown) => {
     if (axios.isAxiosError(error) && error.response?.status === 401) {
-      localStorage.removeItem('auth_token')
-      window.location.href = '/login'
+      const url = error.config?.url ?? ''
+      const isAuthEndpoint = url.includes('/auth/login') || url.includes('/auth/register')
+      if (!isAuthEndpoint) {
+        localStorage.removeItem('auth_token')
+        window.location.href = '/login'
+      }
     }
     return Promise.reject(error)
   },
