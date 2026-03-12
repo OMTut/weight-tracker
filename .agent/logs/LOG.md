@@ -10,6 +10,13 @@
 
 ## Session Log
 
+### 2026-03-11 — TASK-13: PATCH /api/user/password — update user password
+
+- Added `UpdatePasswordRequest` schema to `src/api/schemas/user.py` with `new_password (str, min_length=8)`
+- Added `PATCH /api/user/password` endpoint to `src/api/routers/user.py`: verifies current password (400 on mismatch), hashes and stores new password
+- Created `src/api/tests/test_user_password.py` with 5 tests (success, login with new password, wrong current→400, too short→422, no token→403)
+- All 60 tests pass
+
 ### 2026-03-11 — TASK-12: PATCH /api/user/profile — update name and email
 
 - Created `src/api/schemas/user.py` with `UpdateProfileRequest` (optional name/email fields)

@@ -88,7 +88,7 @@
     "title": "PATCH /api/user/password — update user password",
     "category": "api-endpoint",
     "specFilePath": ".agent/tasks/TASK-13.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-14",

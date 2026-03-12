@@ -3,9 +3,10 @@ from sqlalchemy.orm import Session
 
 from database import get_db
 from dependencies.auth import get_current_user
+from dependencies.security import hash_password, verify_password
 from models.user import User
 from schemas.auth import UserResponse
-from schemas.user import UpdateProfileRequest
+from schemas.user import UpdatePasswordRequest, UpdateProfileRequest
 
 router = APIRouter(prefix="/api/user", tags=["user"])
 
@@ -33,3 +34,18 @@ def update_profile(
     db.commit()
     db.refresh(current_user)
     return UserResponse.model_validate(current_user)
+
+
+@router.patch("/password")
+def update_password(
+    body: UpdatePasswordRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Change the current user's password after verifying the existing one."""
+    if not verify_password(body.current_password, current_user.hashed_password):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+
+    current_user.hashed_password = hash_password(body.new_password)
+    db.commit()
+    return {"message": "Password updated successfully"}
