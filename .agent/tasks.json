@@ -151,7 +151,7 @@
     "title": "Weight entry form — revealed by + button",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-22.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-23",

@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { ChevronDown, Plus } from "lucide-react";
+import { ChevronDown, Plus, X } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { WeightEntryForm } from "@/components/WeightEntryForm";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,14 +15,31 @@ import {
 export function DashboardPage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [showEntryForm, setShowEntryForm] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  /** Called when a new weight entry is saved successfully. */
+  function handleEntrySuccess() {
+    setShowEntryForm(false);
+    setRefreshKey((k) => k + 1);
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
       {/* Sticky top bar */}
       <header className="bg-background sticky top-0 z-10 flex items-center justify-between border-b px-4 py-3">
-        {/* Left: + button */}
-        <Button variant="ghost" size="icon" aria-label="Add weight entry">
-          <Plus className="h-5 w-5" />
+        {/* Left: + / X toggle button */}
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label={showEntryForm ? "Close entry form" : "Add weight entry"}
+          onClick={() => setShowEntryForm((v) => !v)}
+        >
+          {showEntryForm ? (
+            <X className="h-5 w-5" />
+          ) : (
+            <Plus className="h-5 w-5" />
+          )}
         </Button>
 
         {/* Center: app name */}
@@ -43,9 +62,19 @@ export function DashboardPage() {
         </DropdownMenu>
       </header>
 
+      {/* Weight entry form — shown when + is clicked */}
+      {showEntryForm && (
+        <WeightEntryForm
+          weightUnit={user?.weight_unit ?? "lbs"}
+          onSuccess={handleEntrySuccess}
+          onCancel={() => setShowEntryForm(false)}
+        />
+      )}
+
       {/* Main content area */}
       <main className="flex-1 overflow-y-auto p-4">
-        <p className="text-muted-foreground text-sm">
+        {/* refreshKey will be passed to chart/table in later tasks */}
+        <p className="text-muted-foreground text-sm" data-refresh={refreshKey}>
           Weight entries will appear here.
         </p>
       </main>
