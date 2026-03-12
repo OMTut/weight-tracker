@@ -116,7 +116,7 @@
     "title": "Frontend — API client with auth token management",
     "category": "functional",
     "specFilePath": ".agent/tasks/TASK-17.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-18",
