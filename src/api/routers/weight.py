@@ -2,7 +2,7 @@ import math
 from datetime import date, timedelta
 from uuid import uuid4
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy.orm import Session
 
 from database import get_db
@@ -88,3 +88,20 @@ def update_weight_entry(
     db.commit()
     db.refresh(entry)
     return WeightEntryResponse.model_validate(entry)
+
+
+@router.delete("/{entry_id}", status_code=204)
+def delete_weight_entry(
+    entry_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Permanently delete a weight entry. Only the owning user may delete their own entries."""
+    entry = db.query(WeightEntry).filter(WeightEntry.id == entry_id).first()
+    if entry is None:
+        raise HTTPException(status_code=404, detail="Entry not found")
+    if entry.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    db.delete(entry)
+    db.commit()
+    return Response(status_code=204)

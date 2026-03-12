@@ -10,6 +10,12 @@
 
 ## Session Log
 
+### 2026-03-11 — TASK-11: DELETE /api/weight/{id} — delete weight entry
+
+- Added `DELETE /{entry_id}` endpoint to `src/api/routers/weight.py`: validates ownership (404 if not found, 403 if wrong user), deletes entry, returns 204 No Content
+- Created `src/api/tests/test_weight_delete.py` with 6 tests (success, entry removed, double-delete→404, not found, other user→403, no token→403)
+- All 49 tests pass
+
 ### 2026-03-11 — TASK-10: PUT /api/weight/{id} — update weight entry value
 
 - Added `UpdateWeightRequest` schema to `src/api/schemas/weight.py` with `weight_value (float, gt=0)`
