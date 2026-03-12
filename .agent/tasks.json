@@ -144,7 +144,7 @@
     "title": "Dashboard layout — top bar with username dropdown",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-21.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-22",
