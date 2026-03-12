@@ -109,7 +109,7 @@
     "title": "Frontend — install and configure dependencies",
     "category": "functional",
     "specFilePath": ".agent/tasks/TASK-16.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-17",

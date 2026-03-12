@@ -10,6 +10,17 @@
 
 ## Session Log
 
+### 2026-03-12 — TASK-16: Frontend — install and configure dependencies
+
+- Installed axios, TailwindCSS v4 (`@tailwindcss/vite`), `tw-animate-css`, `class-variance-authority`, `lucide-react`
+- Added `@/*` path alias to `tsconfig.app.json` and `tsconfig.json` (needed by shadcn CLI)
+- Updated `vite.config.ts`: added `@tailwindcss/vite` plugin and `@/` resolve alias
+- Ran `npx shadcn@latest init -d -y` to initialize shadcn/ui (New York style, Neutral color, CSS variables)
+- Added shadcn/ui components: button, input, label, card, dropdown-menu, dialog, table, select, separator
+- Rewrote `src/index.css` with clean TailwindCSS v4 + shadcn theme (oklch color space, @theme inline block)
+- Build passes: `npm run build` succeeds, TypeScript clean, 78 modules transformed
+- Dev server starts on port 3001
+
 ### 2026-03-12 — TASK-15: DELETE /api/user/me — delete account and all data
 
 - Added `PRAGMA foreign_keys=ON` event listener to `src/api/database.py` for SQLite cascade delete support
