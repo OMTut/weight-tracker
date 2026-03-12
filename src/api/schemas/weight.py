@@ -1,5 +1,11 @@
 from datetime import date, datetime
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
+
+
+class CreateWeightRequest(BaseModel):
+    """Schema for creating a new weight entry."""
+
+    weight_value: float = Field(..., gt=0)
 
 
 class WeightEntryResponse(BaseModel):

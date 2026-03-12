@@ -10,6 +10,13 @@
 
 ## Session Log
 
+### 2026-03-11 — TASK-9: POST /api/weight — log new weight entry
+
+- Added `CreateWeightRequest` schema to `src/api/schemas/weight.py` with `weight_value (float, gt=0)`
+- Added `POST /` endpoint to `src/api/routers/weight.py`: creates entry with `date.today()` server-side, returns 201 with `WeightEntryResponse`
+- Created `src/api/tests/test_weight_create.py` with 5 tests (success, zero→422, negative→422, no token→403, user association)
+- All 36 tests pass
+
 ### 2026-03-11 — TASK-8: GET /api/weight — list weight entries with pagination and time filter
 
 - Created `src/api/schemas/weight.py` with `WeightEntryResponse` and `PaginatedWeightResponse` schemas
