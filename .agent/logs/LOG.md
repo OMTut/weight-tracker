@@ -10,6 +10,49 @@
 
 ## Session Log
 
+### 2026-03-12 — TASK-34: E2E smoke tests — full user journey with Playwright
+
+- Created `src/tests/e2e/auth.spec.ts`: signup → /dashboard, login flow, logout → /login (3 tests)
+- Created `src/tests/e2e/weight.spec.ts`: log entry, edit entry, delete entry (3 tests)
+- Fixed selectors: `getByLabel("Entry actions")` for dropdown trigger; empty state text is "No entries yet"
+- All 57 Playwright tests pass (6 new e2e + 51 existing)
+
+### 2026-03-12 — TASK-33: Nginx proxy — forward /api requests from frontend to backend
+
+- Fixed `src/web/nginx.conf`: `proxy_pass http://api:8000/api/` (was `/` which stripped the /api/ prefix the FastAPI routes need); added X-Forwarded-For header
+- Fixed `src/web/vite.config.ts`: removed the `rewrite` rule that incorrectly stripped /api/ prefix in dev proxy
+- Updated `src/web/src/lib/api.ts`: Axios baseURL now `VITE_API_URL ?? ''` (empty default uses same-origin routing via nginx or Vite proxy)
+- Verified: `curl localhost:3001/api/weight` → FastAPI 403 (proxy working); all 51 E2E tests pass
+
+### 2026-03-12 — TASK-32: Account page — delete account with confirmation dialog
+
+- Split AccountPage.tsx (329 lines) into sub-components in `src/components/account/`: DisplayNameForm, EmailForm, PasswordForm, WeightUnitForm, DeleteAccountCard — AccountPage.tsx is now 40 lines
+- Created `DeleteAccountCard.tsx`: Danger Zone card with "Delete Account" destructive button, controlled Dialog with "cannot be undone" warning, Cancel + confirm Delete Account buttons (with loading state); calls `deleteAccount()` then `logout()` on success
+- Created `src/tests/account-delete.spec.ts`: 3 Playwright E2E tests (dialog opens, cancel closes, confirm → /login + re-login fails)
+- Screenshot: TASK-32-1 (confirmation dialog)
+- All 51 E2E tests pass; TypeScript clean; ESLint clean
+
+### 2026-03-12 — TASK-31: Account page — weight unit preference selector
+
+- Updated `src/web/src/pages/AccountPage.tsx`: Weight Unit card now has shadcn/ui Select (lbs/kg), Save button; calls `updatePreferences(unit)` and `updateUser()` on success; shows "Preferences saved!" for 2s
+- Created `src/tests/account-unit.spec.ts`: 3 Playwright E2E tests (defaults to lbs, switch to kg saves, unit reflected in dashboard weight entry form)
+- Screenshot: TASK-31-1 (weight entry form showing kg after switch)
+- All 48 E2E tests pass; TypeScript clean; ESLint clean
+
+### 2026-03-12 — TASK-30: Account page — change password form
+
+- Updated `src/web/src/pages/AccountPage.tsx`: Password card now has a real form with Current Password, New Password, Confirm New Password inputs (all type=password); client-side validation (empty current, min 8 chars for new, mismatch → "Passwords do not match"); 400 → "Current password is incorrect"; success clears all inputs + shows "Password updated!" for 2s
+- Created `src/tests/account-password.spec.ts`: 4 Playwright E2E tests (mismatch, too short, wrong current, success+clear)
+- Screenshot: TASK-30-1 (success state)
+- All 45 E2E tests pass; TypeScript clean; ESLint clean
+
+### 2026-03-12 — TASK-29: Account page — change email form
+
+- Updated `src/web/src/pages/AccountPage.tsx`: Email Address card now has a real form — text Input (type=text to avoid browser-native email validation blocking JS validation) pre-filled with `user.email`, regex validation ("Invalid email format"), Save button with loading state, 2-second "Email updated!" success message; 400 error → "Email already in use"
+- Created `src/tests/account-email.spec.ts`: 4 Playwright E2E tests (pre-fill, invalid format validation, duplicate email error, save → success)
+- Screenshot: TASK-29-1 (success state after email save)
+- All 41 E2E tests pass; TypeScript clean; ESLint clean
+
 ### 2026-03-12 — TASK-28: Account page — change display name form
 
 - Added `updateUser(user: User)` method to `AuthContext` to allow updating user state after profile changes

@@ -29,98 +29,98 @@
   },
   {
     "id": "TASK-5",
-    "title": "POST /api/auth/register — create new user account",
+    "title": "POST /api/auth/register \u2014 create new user account",
     "category": "api-endpoint",
     "specFilePath": ".agent/tasks/TASK-5.json",
     "passes": true
   },
   {
     "id": "TASK-6",
-    "title": "POST /api/auth/login — authenticate user and return JWT",
+    "title": "POST /api/auth/login \u2014 authenticate user and return JWT",
     "category": "api-endpoint",
     "specFilePath": ".agent/tasks/TASK-6.json",
     "passes": true
   },
   {
     "id": "TASK-7",
-    "title": "JWT auth dependency — protect API endpoints",
+    "title": "JWT auth dependency \u2014 protect API endpoints",
     "category": "security",
     "specFilePath": ".agent/tasks/TASK-7.json",
     "passes": true
   },
   {
     "id": "TASK-8",
-    "title": "GET /api/weight — list weight entries with pagination and time filter",
+    "title": "GET /api/weight \u2014 list weight entries with pagination and time filter",
     "category": "api-endpoint",
     "specFilePath": ".agent/tasks/TASK-8.json",
     "passes": true
   },
   {
     "id": "TASK-9",
-    "title": "POST /api/weight — log new weight entry",
+    "title": "POST /api/weight \u2014 log new weight entry",
     "category": "api-endpoint",
     "specFilePath": ".agent/tasks/TASK-9.json",
     "passes": true
   },
   {
     "id": "TASK-10",
-    "title": "PUT /api/weight/{id} — update weight entry value",
+    "title": "PUT /api/weight/{id} \u2014 update weight entry value",
     "category": "api-endpoint",
     "specFilePath": ".agent/tasks/TASK-10.json",
     "passes": true
   },
   {
     "id": "TASK-11",
-    "title": "DELETE /api/weight/{id} — delete weight entry",
+    "title": "DELETE /api/weight/{id} \u2014 delete weight entry",
     "category": "api-endpoint",
     "specFilePath": ".agent/tasks/TASK-11.json",
     "passes": true
   },
   {
     "id": "TASK-12",
-    "title": "PATCH /api/user/profile — update name and email",
+    "title": "PATCH /api/user/profile \u2014 update name and email",
     "category": "api-endpoint",
     "specFilePath": ".agent/tasks/TASK-12.json",
     "passes": true
   },
   {
     "id": "TASK-13",
-    "title": "PATCH /api/user/password — update user password",
+    "title": "PATCH /api/user/password \u2014 update user password",
     "category": "api-endpoint",
     "specFilePath": ".agent/tasks/TASK-13.json",
     "passes": true
   },
   {
     "id": "TASK-14",
-    "title": "PATCH /api/user/preferences — update weight unit preference",
+    "title": "PATCH /api/user/preferences \u2014 update weight unit preference",
     "category": "api-endpoint",
     "specFilePath": ".agent/tasks/TASK-14.json",
     "passes": true
   },
   {
     "id": "TASK-15",
-    "title": "DELETE /api/user/me — delete account and all data",
+    "title": "DELETE /api/user/me \u2014 delete account and all data",
     "category": "api-endpoint",
     "specFilePath": ".agent/tasks/TASK-15.json",
     "passes": true
   },
   {
     "id": "TASK-16",
-    "title": "Frontend — install and configure dependencies",
+    "title": "Frontend \u2014 install and configure dependencies",
     "category": "functional",
     "specFilePath": ".agent/tasks/TASK-16.json",
     "passes": true
   },
   {
     "id": "TASK-17",
-    "title": "Frontend — API client with auth token management",
+    "title": "Frontend \u2014 API client with auth token management",
     "category": "functional",
     "specFilePath": ".agent/tasks/TASK-17.json",
     "passes": true
   },
   {
     "id": "TASK-18",
-    "title": "Frontend — auth context, routing, and protected routes",
+    "title": "Frontend \u2014 auth context, routing, and protected routes",
     "category": "functional",
     "specFilePath": ".agent/tasks/TASK-18.json",
     "passes": true
@@ -141,14 +141,14 @@
   },
   {
     "id": "TASK-21",
-    "title": "Dashboard layout — top bar with username dropdown",
+    "title": "Dashboard layout \u2014 top bar with username dropdown",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-21.json",
     "passes": true
   },
   {
     "id": "TASK-22",
-    "title": "Weight entry form — revealed by + button",
+    "title": "Weight entry form \u2014 revealed by + button",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-22.json",
     "passes": true
@@ -169,14 +169,14 @@
   },
   {
     "id": "TASK-25",
-    "title": "Table row actions — ... menu with Edit and Delete",
+    "title": "Table row actions \u2014 ... menu with Edit and Delete",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-25.json",
     "passes": true
   },
   {
     "id": "TASK-26",
-    "title": "Edit weight entry — inline form in table row",
+    "title": "Edit weight entry \u2014 inline form in table row",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-26.json",
     "passes": true
@@ -190,51 +190,51 @@
   },
   {
     "id": "TASK-28",
-    "title": "Account page — change display name form",
+    "title": "Account page \u2014 change display name form",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-28.json",
     "passes": true
   },
   {
     "id": "TASK-29",
-    "title": "Account page — change email form",
+    "title": "Account page \u2014 change email form",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-29.json",
     "passes": true
   },
   {
     "id": "TASK-30",
-    "title": "Account page — change password form",
+    "title": "Account page \u2014 change password form",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-30.json",
     "passes": true
   },
   {
     "id": "TASK-31",
-    "title": "Account page — weight unit preference selector",
+    "title": "Account page \u2014 weight unit preference selector",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-31.json",
     "passes": true
   },
   {
     "id": "TASK-32",
-    "title": "Account page — delete account with confirmation dialog",
+    "title": "Account page \u2014 delete account with confirmation dialog",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-32.json",
     "passes": true
   },
   {
     "id": "TASK-33",
-    "title": "Nginx proxy — forward /api requests from frontend to backend",
+    "title": "Nginx proxy \u2014 forward /api requests from frontend to backend",
     "category": "functional",
     "specFilePath": ".agent/tasks/TASK-33.json",
     "passes": true
   },
   {
     "id": "TASK-34",
-    "title": "E2E smoke tests — full user journey with Playwright",
+    "title": "E2E smoke tests \u2014 full user journey with Playwright",
     "category": "functional",
     "specFilePath": ".agent/tasks/TASK-34.json",
-    "passes": false
+    "passes": true
   }
 ]
