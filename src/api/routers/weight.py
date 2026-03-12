@@ -2,14 +2,14 @@ import math
 from datetime import date, timedelta
 from uuid import uuid4
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from database import get_db
 from dependencies.auth import get_current_user
 from models.user import User
 from models.weight_entry import WeightEntry
-from schemas.weight import CreateWeightRequest, PaginatedWeightResponse, WeightEntryResponse
+from schemas.weight import CreateWeightRequest, PaginatedWeightResponse, UpdateWeightRequest, WeightEntryResponse
 
 router = APIRouter(prefix="/api/weight", tags=["weight"])
 
@@ -66,6 +66,25 @@ def create_weight_entry(
         recorded_at=date.today(),
     )
     db.add(entry)
+    db.commit()
+    db.refresh(entry)
+    return WeightEntryResponse.model_validate(entry)
+
+
+@router.put("/{entry_id}", response_model=WeightEntryResponse)
+def update_weight_entry(
+    entry_id: str,
+    request: UpdateWeightRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Update the weight_value of an existing entry. The recorded_at date cannot be changed."""
+    entry = db.query(WeightEntry).filter(WeightEntry.id == entry_id).first()
+    if entry is None:
+        raise HTTPException(status_code=404, detail="Entry not found")
+    if entry.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    entry.weight_value = request.weight_value
     db.commit()
     db.refresh(entry)
     return WeightEntryResponse.model_validate(entry)

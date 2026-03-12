@@ -10,6 +10,13 @@
 
 ## Session Log
 
+### 2026-03-11 — TASK-10: PUT /api/weight/{id} — update weight entry value
+
+- Added `UpdateWeightRequest` schema to `src/api/schemas/weight.py` with `weight_value (float, gt=0)`
+- Added `PUT /{entry_id}` endpoint to `src/api/routers/weight.py`: validates ownership (404 if not found, 403 if wrong user), updates `weight_value`, returns `WeightEntryResponse`
+- Created `src/api/tests/test_weight_update.py` with 7 tests (success, recorded_at unchanged, 404, 403 other user, zero→422, negative→422, no token→403)
+- All 43 tests pass
+
 ### 2026-03-11 — TASK-9: POST /api/weight — log new weight entry
 
 - Added `CreateWeightRequest` schema to `src/api/schemas/weight.py` with `weight_value (float, gt=0)`

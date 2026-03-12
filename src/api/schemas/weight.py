@@ -8,6 +8,12 @@ class CreateWeightRequest(BaseModel):
     weight_value: float = Field(..., gt=0)
 
 
+class UpdateWeightRequest(BaseModel):
+    """Schema for updating an existing weight entry's value."""
+
+    weight_value: float = Field(..., gt=0)
+
+
 class WeightEntryResponse(BaseModel):
     """Schema for a single weight entry in API responses."""
 

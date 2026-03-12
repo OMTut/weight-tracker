@@ -67,7 +67,7 @@
     "title": "PUT /api/weight/{id} — update weight entry value",
     "category": "api-endpoint",
     "specFilePath": ".agent/tasks/TASK-10.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-11",
