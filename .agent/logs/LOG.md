@@ -10,6 +10,21 @@
 
 ## Session Log
 
+### 2026-03-12 — TASK-18: Frontend — auth context, routing, and protected routes
+
+- Created `src/web/src/context/AuthContext.tsx`: `AuthProvider` with `user`, `isLoading`, `login()`, `logout()` — reads token from localStorage on mount, calls `getMe()` to restore session, uses `useNavigate` from TanStack Router for logout redirect
+- Created `src/web/src/components/ProtectedRoute.tsx`: renders spinner while loading, redirects to `/login` if no user, else renders `<Outlet />`
+- Created placeholder pages: `LoginPage`, `SignupPage` (redirect authenticated users → /dashboard), `DashboardPage`, `AccountPage`
+- Replaced `src/web/src/App.tsx` with TanStack Router setup: root route wraps children in `AuthProvider`, public routes `/login`/`/signup`, protected layout wraps `/dashboard`/`/account`, `/` redirects to `/dashboard`
+- TypeScript clean, ESLint clean, full build passes (220 modules), 68 API tests pass
+
+### 2026-03-12 — TASK-17: Frontend — API client with auth token management
+
+- Created `src/web/src/types/api.ts`: User, AuthResponse, WeightEntry, PaginatedWeightResponse interfaces
+- Created `src/web/src/lib/api.ts`: Axios instance with baseURL from VITE_API_URL env var, request interceptor (attaches Bearer token from localStorage key 'auth_token'), response interceptor (401 → clear token + redirect to /login)
+- Created `src/web/src/lib/apiService.ts`: typed service functions for all API endpoints (auth, weight CRUD, user profile/password/preferences/delete)
+- Build passes (TypeScript clean)
+
 ### 2026-03-12 — TASK-16: Frontend — install and configure dependencies
 
 - Installed axios, TailwindCSS v4 (`@tailwindcss/vite`), `tw-animate-css`, `class-variance-authority`, `lucide-react`

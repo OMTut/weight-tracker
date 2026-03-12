@@ -1,51 +1,88 @@
-import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import {
+  createRootRoute,
+  createRoute,
+  createRouter,
+  Navigate,
+  Outlet,
+  RouterProvider,
+} from "@tanstack/react-router";
+import { AuthProvider } from "@/context/AuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { LoginPage } from "@/pages/LoginPage";
+import { SignupPage } from "@/pages/SignupPage";
+import { DashboardPage } from "@/pages/DashboardPage";
+import { AccountPage } from "@/pages/AccountPage";
 
-type HealthResponse = { status: string }
+/* ── Route definitions ─────────────────────────────────────────── */
 
-function App() {
-  const [count, setCount] = useState(0)
+const rootRoute = createRootRoute({
+  component: () => (
+    <AuthProvider>
+      <Outlet />
+    </AuthProvider>
+  ),
+});
 
-  const { data, isLoading, isError } = useQuery<HealthResponse>({
-    queryKey: ['health'],
-    queryFn: () => fetch('/api/health').then((r) => r.json()),
-  })
+/** / → redirect to /dashboard */
+const indexRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/",
+  component: () => <Navigate to="/dashboard" replace />,
+});
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <div className="card">
-        <p>
-          API health:{' '}
-          {isLoading && <span>checking...</span>}
-          {isError && <span style={{ color: 'red' }}>unreachable</span>}
-          {data && <span style={{ color: 'green' }}>{data.status}</span>}
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+/** Public routes */
+const loginRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/login",
+  component: LoginPage,
+});
+
+const signupRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/signup",
+  component: SignupPage,
+});
+
+/** Protected layout — wraps authenticated routes */
+const protectedLayout = createRoute({
+  getParentRoute: () => rootRoute,
+  id: "protected",
+  component: ProtectedRoute,
+});
+
+const dashboardRoute = createRoute({
+  getParentRoute: () => protectedLayout,
+  path: "/dashboard",
+  component: DashboardPage,
+});
+
+const accountRoute = createRoute({
+  getParentRoute: () => protectedLayout,
+  path: "/account",
+  component: AccountPage,
+});
+
+/* ── Router ────────────────────────────────────────────────────── */
+
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  loginRoute,
+  signupRoute,
+  protectedLayout.addChildren([dashboardRoute, accountRoute]),
+]);
+
+const router = createRouter({ routeTree });
+
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: typeof router;
+  }
 }
 
-export default App
+/* ── App ───────────────────────────────────────────────────────── */
+
+function App() {
+  return <RouterProvider router={router} />;
+}
+
+export default App;

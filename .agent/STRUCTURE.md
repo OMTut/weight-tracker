@@ -11,9 +11,24 @@ weight-tracker/
 │   │   └── Dockerfile
 │   ├── web/                  # React + Vite frontend
 │   │   ├── src/
+│   │   │   ├── context/
+│   │   │   │   └── AuthContext.tsx  # Auth state, login/logout, session restore
+│   │   │   ├── components/
+│   │   │   │   ├── ProtectedRoute.tsx  # Redirects unauthenticated users to /login
+│   │   │   │   └── ui/              # shadcn/ui primitives
+│   │   │   ├── pages/
+│   │   │   │   ├── LoginPage.tsx    # Public — redirects auth'd users to /dashboard
+│   │   │   │   ├── SignupPage.tsx   # Public — redirects auth'd users to /dashboard
+│   │   │   │   ├── DashboardPage.tsx
+│   │   │   │   └── AccountPage.tsx
+│   │   │   ├── lib/
+│   │   │   │   ├── api.ts           # Axios instance with JWT interceptors
+│   │   │   │   ├── apiService.ts    # Typed API service functions
+│   │   │   │   └── utils.ts
+│   │   │   ├── types/
+│   │   │   │   └── api.ts           # Shared TypeScript interfaces
 │   │   │   ├── main.tsx      # React entry point with QueryClientProvider
-│   │   │   ├── App.tsx       # Root app component
-│   │   │   ├── App.css
+│   │   │   ├── App.tsx       # TanStack Router setup + route tree
 │   │   │   └── index.css
 │   │   ├── vite.config.ts    # Vite config with dev proxy to :8000
 │   │   ├── package.json
