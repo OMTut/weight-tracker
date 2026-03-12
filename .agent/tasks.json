@@ -200,7 +200,7 @@
     "title": "Account page — change email form",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-29.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-30",
