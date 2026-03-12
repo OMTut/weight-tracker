@@ -10,6 +10,13 @@
 
 ## Session Log
 
+### 2026-03-12 — TASK-15: DELETE /api/user/me — delete account and all data
+
+- Added `PRAGMA foreign_keys=ON` event listener to `src/api/database.py` for SQLite cascade delete support
+- Added `DELETE /me` endpoint to `src/api/routers/user.py`: deletes current user + cascades weight entries, returns 204
+- Created `src/api/tests/test_user_delete.py` with 4 tests (204 success, JWT invalid after delete, cascade weight entries, no token→403)
+- All 68 tests pass
+
 ### 2026-03-12 — TASK-14: PATCH /api/user/preferences — update weight unit preference
 
 - Added `UpdatePreferencesRequest` schema to `src/api/schemas/user.py` with `weight_unit: Literal['lbs', 'kg']`
