@@ -214,7 +214,7 @@
     "title": "Account page — weight unit preference selector",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-31.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-32",
