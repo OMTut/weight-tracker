@@ -228,7 +228,7 @@
     "title": "Nginx proxy — forward /api requests from frontend to backend",
     "category": "functional",
     "specFilePath": ".agent/tasks/TASK-33.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-34",
