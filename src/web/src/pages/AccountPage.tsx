@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/AuthContext";
-import { updateProfile } from "@/lib/apiService";
+import { updateProfile, updatePassword } from "@/lib/apiService";
 
 /** Account Info page — user profile management with sections for each setting. */
 export function AccountPage() {
@@ -47,6 +47,14 @@ export function AccountPage() {
     }
   }
 
+  // Password form state
+  const [currentPw, setCurrentPw] = useState("");
+  const [newPw, setNewPw] = useState("");
+  const [confirmPw, setConfirmPw] = useState("");
+  const [pwError, setPwError] = useState("");
+  const [pwSaving, setPwSaving] = useState(false);
+  const [pwSuccess, setPwSuccess] = useState(false);
+
   /** Handle email form submission. */
   async function handleEmailSave(e: React.FormEvent) {
     e.preventDefault();
@@ -71,6 +79,42 @@ export function AccountPage() {
       );
     } finally {
       setEmailSaving(false);
+    }
+  }
+
+  /** Handle password form submission. */
+  async function handlePasswordSave(e: React.FormEvent) {
+    e.preventDefault();
+    setPwError("");
+    if (!currentPw) {
+      setPwError("Current password is required");
+      return;
+    }
+    if (newPw.length < 8) {
+      setPwError("New password must be at least 8 characters");
+      return;
+    }
+    if (newPw !== confirmPw) {
+      setPwError("Passwords do not match");
+      return;
+    }
+    setPwSaving(true);
+    try {
+      await updatePassword(currentPw, newPw);
+      setCurrentPw("");
+      setNewPw("");
+      setConfirmPw("");
+      setPwSuccess(true);
+      setTimeout(() => setPwSuccess(false), 2000);
+    } catch (err) {
+      const status = (err as AxiosError)?.response?.status;
+      setPwError(
+        status === 400
+          ? "Current password is incorrect"
+          : "Failed to update password. Please try again.",
+      );
+    } finally {
+      setPwSaving(false);
     }
   }
 
@@ -157,9 +201,44 @@ export function AccountPage() {
               <CardTitle className="text-base">Password</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Change your account password.
-              </p>
+              <form onSubmit={handlePasswordSave} className="space-y-3">
+                <div className="space-y-1">
+                  <Label htmlFor="current-password">Current Password</Label>
+                  <Input
+                    id="current-password"
+                    type="password"
+                    value={currentPw}
+                    onChange={(e) => setCurrentPw(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="new-password">New Password</Label>
+                  <Input
+                    id="new-password"
+                    type="password"
+                    value={newPw}
+                    onChange={(e) => setNewPw(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="confirm-password">Confirm New Password</Label>
+                  <Input
+                    id="confirm-password"
+                    type="password"
+                    value={confirmPw}
+                    onChange={(e) => setConfirmPw(e.target.value)}
+                  />
+                </div>
+                {pwError && (
+                  <p className="text-destructive text-sm">{pwError}</p>
+                )}
+                {pwSuccess && (
+                  <p className="text-sm text-green-600">Password updated!</p>
+                )}
+                <Button type="submit" disabled={pwSaving}>
+                  {pwSaving ? "Saving…" : "Save"}
+                </Button>
+              </form>
             </CardContent>
           </Card>
 

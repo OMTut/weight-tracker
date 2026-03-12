@@ -207,7 +207,7 @@
     "title": "Account page — change password form",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-30.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-31",
