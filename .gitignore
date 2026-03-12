@@ -35,6 +35,10 @@ Thumbs.db
 .agent/screenshots/
 .agent/tasks.json
 
+# Test runner output
+test-results/
+playwright-report/
+
 # AI tool configs (local only)
 .claude/
 .agents/

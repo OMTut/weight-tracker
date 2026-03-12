@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { ChevronDown, Plus, X } from "lucide-react";
+import { ChevronDown, Moon, Plus, Sun, X } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useTheme } from "@/hooks/useTheme";
 import { WeightEntryForm } from "@/components/WeightEntryForm";
 import { WeightChart } from "@/components/WeightChart";
 import { WeightTable } from "@/components/WeightTable";
@@ -17,6 +18,7 @@ import {
 export function DashboardPage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const { theme, toggle: toggleTheme } = useTheme();
   const [showEntryForm, setShowEntryForm] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -47,13 +49,26 @@ export function DashboardPage() {
         {/* Center: app name */}
         <span className="text-lg font-semibold">HeavyDeets</span>
 
-        {/* Right: user dropdown */}
+        {/* Right: theme toggle + user dropdown */}
+        <div className="flex items-center gap-1">
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Toggle theme"
+          onClick={toggleTheme}
+        >
+          {theme === "dark" ? (
+            <Sun className="h-5 w-5" />
+          ) : (
+            <Moon className="h-5 w-5" />
+          )}
+        </Button>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-1">
-              <span className="max-w-[120px] truncate">{user?.name}</span>
-              <ChevronDown className="h-4 w-4 shrink-0" />
-            </Button>
+          <DropdownMenuTrigger
+            render={<Button variant="ghost" className="flex items-center gap-1" />}
+          >
+            <span className="max-w-[120px] truncate">{user?.name}</span>
+            <ChevronDown className="h-4 w-4 shrink-0" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => navigate({ to: "/account" })}>
@@ -62,6 +77,7 @@ export function DashboardPage() {
             <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+        </div>
       </header>
 
       {/* Weight entry form — shown when + is clicked */}

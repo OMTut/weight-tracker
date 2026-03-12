@@ -13,7 +13,7 @@ interface WeightEntryFormProps {
 }
 
 const weightSchema = z.coerce
-  .number({ invalid_type_error: "Please enter a number" })
+  .number({ message: "Please enter a number" })
   .positive("Weight must be positive");
 
 /** Inline form for logging a new weight entry. */

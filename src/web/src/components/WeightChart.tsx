@@ -11,6 +11,14 @@ import {
 import { getWeightEntries } from "@/lib/apiService";
 import type { WeightEntry } from "@/types/api";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 type TimeFilter = "7d" | "30d" | "3m" | "all";
 
@@ -19,22 +27,40 @@ interface WeightChartProps {
 }
 
 const FILTERS: { label: string; value: TimeFilter }[] = [
-  { label: "Last 7 Days", value: "7d" },
-  { label: "Last 30 Days", value: "30d" },
-  { label: "Last 3 Months", value: "3m" },
-  { label: "All Time", value: "all" },
+  { label: "7D", value: "7d" },
+  { label: "30D", value: "30d" },
+  { label: "3M", value: "3m" },
+  { label: "All", value: "all" },
 ];
 
-/** Format ISO date string as DD.MM for X-axis labels. */
+/** Axis tick rendered with inline style so CSS variables resolve correctly inside SVG. */
+function AxisTick({ x, y, payload, anchor = "middle" }: {
+  x?: number; y?: number; payload?: { value: string };
+  anchor?: "start" | "middle" | "end" | "inherit";
+}) {
+  return (
+    <text
+      x={x}
+      y={y}
+      dy={4}
+      textAnchor={anchor}
+      style={{ fill: "var(--muted-foreground)", fontSize: 11 }}
+    >
+      {payload?.value}
+    </text>
+  );
+}
+
+/** Format ISO date string as MM.DD for X-axis labels. */
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr);
   const dd = String(d.getDate()).padStart(2, "0");
   const mm = String(d.getMonth() + 1).padStart(2, "0");
-  return `${dd}.${mm}`;
+  return `${mm}.${dd}`;
 }
 
 /**
- * Area chart showing weight over time.
+ * Area chart showing weight over time, styled as a shadcn dashboard card.
  * entries === null means initial load is in progress.
  * entries === [] means no data for the selected range.
  */
@@ -75,54 +101,94 @@ export function WeightChart({ refreshKey }: WeightChartProps) {
   const maxY = weights.length ? Math.ceil(Math.max(...weights)) + 5 : 100;
 
   return (
-    <div className="rounded-lg border p-4">
-      {/* Time filter buttons */}
-      <div className="mb-4 flex flex-wrap gap-2">
-        {FILTERS.map((f) => (
-          <Button
-            key={f.value}
-            size="sm"
-            variant={activeFilter === f.value ? "default" : "outline"}
-            onClick={() => setActiveFilter(f.value)}
-            data-testid={`filter-${f.value}`}
-          >
-            {f.label}
-          </Button>
-        ))}
-      </div>
+    <Card>
+      <CardHeader className="border-b pb-4">
+        <div>
+          <CardTitle>Weight Trend</CardTitle>
+          <CardDescription>Your weight over time</CardDescription>
+        </div>
+        <CardAction>
+          <div className="flex gap-1">
+            {FILTERS.map((f) => (
+              <Button
+                key={f.value}
+                size="sm"
+                variant={activeFilter === f.value ? "default" : "ghost"}
+                className="h-7 px-2.5 text-xs"
+                onClick={() => setActiveFilter(f.value)}
+                data-testid={`filter-${f.value}`}
+              >
+                {f.label}
+              </Button>
+            ))}
+          </div>
+        </CardAction>
+      </CardHeader>
 
-      {/* Chart area */}
-      {entries === null ? (
-        <div className="text-muted-foreground flex h-[300px] items-center justify-center text-sm">
-          Loading…
-        </div>
-      ) : entries.length === 0 ? (
-        <div
-          className="text-muted-foreground flex h-[300px] items-center justify-center text-sm"
-          data-testid="chart-empty"
-        >
-          No data for this period
-        </div>
-      ) : (
-        <ResponsiveContainer width="100%" height={300}>
-          <AreaChart
-            data={chartData}
-            margin={{ top: 4, right: 8, left: 0, bottom: 0 }}
+      <CardContent className="pt-4">
+        {entries === null ? (
+          <div className="text-muted-foreground flex h-[300px] items-center justify-center text-sm">
+            Loading…
+          </div>
+        ) : entries.length === 0 ? (
+          <div
+            className="text-muted-foreground flex h-[300px] items-center justify-center text-sm"
+            data-testid="chart-empty"
           >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-            <YAxis domain={[minY, maxY]} tick={{ fontSize: 12 }} />
-            <Tooltip />
-            <Area
-              type="monotone"
-              dataKey="weight"
-              stroke="hsl(var(--primary, 220 90% 56%))"
-              fill="hsl(var(--primary, 220 90% 56%) / 0.2)"
-              strokeWidth={2}
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-      )}
-    </div>
+            No data for this period
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height={300}>
+            <AreaChart
+              data={chartData}
+              margin={{ top: 4, right: 4, left: -16, bottom: 0 }}
+            >
+              <defs>
+                <linearGradient id="weightGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid
+                vertical={false}
+                stroke="var(--border)"
+                strokeDasharray="3 3"
+              />
+              <XAxis
+                dataKey="date"
+                tick={<AxisTick anchor="middle" />}
+                tickLine={false}
+                axisLine={false}
+              />
+              <YAxis
+                domain={[minY, maxY]}
+                tick={<AxisTick anchor="end" />}
+                tickLine={false}
+                axisLine={false}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "var(--card)",
+                  border: "1px solid var(--border)",
+                  borderRadius: "8px",
+                  fontSize: "12px",
+                  color: "var(--card-foreground)",
+                }}
+                cursor={{ stroke: "var(--border)" }}
+              />
+              <Area
+                type="monotone"
+                dataKey="weight"
+                stroke="var(--primary)"
+                fill="url(#weightGradient)"
+                strokeWidth={2}
+                dot={false}
+                activeDot={{ r: 4, fill: "var(--primary)" }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        )}
+      </CardContent>
+    </Card>
   );
 }

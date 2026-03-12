@@ -14,7 +14,7 @@ from schemas.weight import CreateWeightRequest, PaginatedWeightResponse, UpdateW
 router = APIRouter(prefix="/api/weight", tags=["weight"])
 
 
-@router.get("/", response_model=PaginatedWeightResponse)
+@router.get("", response_model=PaginatedWeightResponse)
 def list_weight_entries(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
@@ -52,7 +52,7 @@ def list_weight_entries(
     )
 
 
-@router.post("/", response_model=WeightEntryResponse, status_code=201)
+@router.post("", response_model=WeightEntryResponse, status_code=201)
 def create_weight_entry(
     request: CreateWeightRequest,
     current_user: User = Depends(get_current_user),

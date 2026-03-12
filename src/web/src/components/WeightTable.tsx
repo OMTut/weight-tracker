@@ -11,6 +11,14 @@ import type { WeightEntry } from "@/types/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -142,139 +150,151 @@ export function WeightTable({
   }
 
   return (
-    <div className="rounded-lg border" data-testid="weight-table">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Date</TableHead>
-            <TableHead>Weight</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {entries === null ? (
-            <TableRow>
-              <TableCell
-                colSpan={3}
-                className="text-muted-foreground text-center"
-              >
-                Loading…
-              </TableCell>
+    <Card data-testid="weight-table">
+      <CardHeader className="border-b pb-4">
+        <CardTitle>Weight History</CardTitle>
+        <CardDescription>
+          {entries !== null
+            ? `Showing page ${page} of ${totalPages}`
+            : "Loading your entries…"}
+        </CardDescription>
+      </CardHeader>
+
+      <CardContent className="p-0">
+        <Table>
+          <TableHeader>
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="pl-6">Date</TableHead>
+              <TableHead>Weight</TableHead>
+              <TableHead className="pr-6 text-right">Actions</TableHead>
             </TableRow>
-          ) : entries.length === 0 ? (
-            <TableRow>
-              <TableCell
-                colSpan={3}
-                className="text-muted-foreground text-center"
-                data-testid="table-empty"
-              >
-                No entries yet
-              </TableCell>
-            </TableRow>
-          ) : (
-            entries.map((entry) => {
-              const isEditing = editingId === entry.id;
-              return (
-                <TableRow key={entry.id} data-testid="table-row">
-                  <TableCell>
-                    {format(parseISO(entry.recorded_at), "dd.MM.yyyy")}
-                  </TableCell>
-                  <TableCell>
-                    {isEditing ? (
-                      <div className="flex flex-col gap-1">
-                        <Input
-                          type="number"
-                          step="0.1"
-                          min="0.1"
-                          autoFocus
-                          value={editingValue}
-                          onChange={(e) => {
-                            setEditingValue(e.target.value);
-                            setEditError(null);
-                          }}
-                          data-testid="edit-weight-input"
-                          className="w-28"
-                        />
-                        {editError && (
-                          <span
-                            className="text-destructive text-xs"
-                            data-testid="edit-error"
-                          >
-                            {editError}
-                          </span>
-                        )}
-                      </div>
-                    ) : (
-                      <>
-                        {entry.weight_value} {user?.weight_unit ?? "lbs"}
-                      </>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {isEditing ? (
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          data-testid="save-edit"
-                          disabled={savingId === entry.id}
-                          onClick={() => void handleSave(entry.id)}
-                        >
-                          {savingId === entry.id ? "Saving…" : "Save"}
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          data-testid="cancel-edit"
-                          onClick={handleCancel}
-                        >
-                          Cancel
-                        </Button>
-                      </div>
-                    ) : (
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            data-testid={`actions-menu-${entry.id}`}
-                            aria-label="Entry actions"
-                            disabled={deletingId === entry.id}
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            data-testid={`edit-entry-${entry.id}`}
-                            onClick={() => {
-                              setEditingId(entry.id);
-                              setEditingValue(String(entry.weight_value));
+          </TableHeader>
+          <TableBody>
+            {entries === null ? (
+              <TableRow>
+                <TableCell
+                  colSpan={3}
+                  className="text-muted-foreground py-12 text-center"
+                >
+                  Loading…
+                </TableCell>
+              </TableRow>
+            ) : entries.length === 0 ? (
+              <TableRow>
+                <TableCell
+                  colSpan={3}
+                  className="text-muted-foreground py-12 text-center"
+                  data-testid="table-empty"
+                >
+                  No entries yet
+                </TableCell>
+              </TableRow>
+            ) : (
+              entries.map((entry) => {
+                const isEditing = editingId === entry.id;
+                return (
+                  <TableRow key={entry.id} data-testid="table-row">
+                    <TableCell className="pl-6 font-medium">
+                      {format(parseISO(entry.recorded_at), "MM.dd.yyyy")}
+                    </TableCell>
+                    <TableCell>
+                      {isEditing ? (
+                        <div className="flex flex-col gap-1">
+                          <Input
+                            type="number"
+                            step="0.1"
+                            min="0.1"
+                            autoFocus
+                            value={editingValue}
+                            onChange={(e) => {
+                              setEditingValue(e.target.value);
                               setEditError(null);
                             }}
+                            data-testid="edit-weight-input"
+                            className="w-28"
+                          />
+                          {editError && (
+                            <span
+                              className="text-destructive text-xs"
+                              data-testid="edit-error"
+                            >
+                              {editError}
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">
+                          {entry.weight_value} {user?.weight_unit ?? "lbs"}
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell className="pr-6 text-right">
+                      {isEditing ? (
+                        <div className="flex justify-end gap-2">
+                          <Button
+                            size="sm"
+                            data-testid="save-edit"
+                            disabled={savingId === entry.id}
+                            onClick={() => void handleSave(entry.id)}
                           >
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            className="text-red-600"
-                            data-testid={`delete-entry-${entry.id}`}
-                            disabled={deletingId === entry.id}
-                            onClick={() => void handleDelete(entry.id)}
+                            {savingId === entry.id ? "Saving…" : "Save"}
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            data-testid="cancel-edit"
+                            onClick={handleCancel}
                           >
-                            {deletingId === entry.id ? "Deleting…" : "Delete"}
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    )}
-                  </TableCell>
-                </TableRow>
-              );
-            })
-          )}
-        </TableBody>
-      </Table>
+                            Cancel
+                          </Button>
+                        </div>
+                      ) : (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger
+                            render={
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                data-testid={`actions-menu-${entry.id}`}
+                                aria-label="Entry actions"
+                                disabled={deletingId === entry.id}
+                              />
+                            }
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              data-testid={`edit-entry-${entry.id}`}
+                              onClick={() => {
+                                setEditingId(entry.id);
+                                setEditingValue(String(entry.weight_value));
+                                setEditError(null);
+                              }}
+                            >
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              className="text-destructive focus:text-destructive"
+                              data-testid={`delete-entry-${entry.id}`}
+                              disabled={deletingId === entry.id}
+                              onClick={() => void handleDelete(entry.id)}
+                            >
+                              {deletingId === entry.id ? "Deleting…" : "Delete"}
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                );
+              })
+            )}
+          </TableBody>
+        </Table>
+      </CardContent>
 
-      {/* Pagination controls */}
-      <div className="flex items-center justify-between border-t px-4 py-2">
+      <CardFooter className="justify-between">
         <span className="text-muted-foreground text-sm" data-testid="page-info">
           Page {page} of {totalPages}
         </span>
@@ -298,7 +318,7 @@ export function WeightTable({
             Next
           </Button>
         </div>
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   );
 }
