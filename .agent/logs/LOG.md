@@ -10,6 +10,13 @@
 
 ## Session Log
 
+### 2026-03-12 — TASK-27: Account Info page layout
+
+- `src/web/src/pages/AccountPage.tsx` already implemented: sticky top bar with back arrow + "Account Info" title, 5 card sections (Display Name, Email Address, Password, Weight Unit, Danger Zone with destructive color)
+- Updated `src/tests/account-page.spec.ts`: fixed parallel-run email conflicts (per-worker unique email), added `{ exact: true }` to text locators to avoid strict mode violations
+- Screenshots: TASK-27-1 (desktop), TASK-27-2 (mobile)
+- All 33 E2E tests pass; TypeScript clean; ESLint clean
+
 ### 2026-03-12 — TASK-26: Edit weight entry — inline form in table row
 
 - Updated `src/web/src/components/WeightTable.tsx`: added `editingId`, `editingValue`, `editError`, `savingId` state; Edit menu item sets editingId + prefills editingValue; edit mode renders `Input` (autoFocus) in Weight cell and Save/Cancel buttons in Actions cell; `handleSave` validates positive number, calls `updateWeightEntry`, re-fetches table; `handleCancel` clears state

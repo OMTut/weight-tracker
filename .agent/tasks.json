@@ -186,7 +186,7 @@
     "title": "Account Info page layout",
     "category": "ui-ux",
     "specFilePath": ".agent/tasks/TASK-27.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-28",
