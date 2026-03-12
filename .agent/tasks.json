@@ -53,7 +53,7 @@
     "title": "GET /api/weight — list weight entries with pagination and time filter",
     "category": "api-endpoint",
     "specFilePath": ".agent/tasks/TASK-8.json",
-    "passes": false
+    "passes": true
   },
   {
     "id": "TASK-9",

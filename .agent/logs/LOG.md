@@ -10,6 +10,14 @@
 
 ## Session Log
 
+### 2026-03-11 — TASK-8: GET /api/weight — list weight entries with pagination and time filter
+
+- Created `src/api/schemas/weight.py` with `WeightEntryResponse` and `PaginatedWeightResponse` schemas
+- Created `src/api/routers/weight.py` with `GET /api/weight/` endpoint supporting page, page_size, time_filter ('7d', '30d', '3m', 'all') query params
+- Registered weight router in `main.py`
+- Created `src/api/tests/test_weight_list.py` with 7 tests (empty list, user isolation, sort order, time filter, pagination, no token, invalid token)
+- All 31 tests pass
+
 ### 2026-03-11 — TASK-7: JWT auth dependency — protect API endpoints
 
 - Created `src/api/dependencies/auth.py` with `get_current_user` dependency using `HTTPBearer`

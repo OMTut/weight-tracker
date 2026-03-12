@@ -8,6 +8,7 @@ from database import Base, engine
 import models.user  # noqa: F401 — ensures User model is registered with Base
 import models.weight_entry  # noqa: F401 — ensures WeightEntry model is registered with Base
 from routers.auth import router as auth_router
+from routers.weight import router as weight_router
 
 
 @asynccontextmanager
@@ -35,6 +36,7 @@ app.add_middleware(
 
 
 app.include_router(auth_router)
+app.include_router(weight_router)
 
 
 @app.get("/health")
