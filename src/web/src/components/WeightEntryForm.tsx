@@ -61,9 +61,10 @@ export function WeightEntryForm({
                   type="number"
                   step="0.1"
                   placeholder="e.g. 175.5"
-                  className="w-36"
+                  className="w-36 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
+                  onWheel={(e) => e.currentTarget.blur()}
                 />
                 {field.state.meta.errors.length > 0 && (
                   <p className="text-destructive text-xs">

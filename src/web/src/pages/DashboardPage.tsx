@@ -80,14 +80,18 @@ export function DashboardPage() {
         </div>
       </header>
 
-      {/* Weight entry form — shown when + is clicked */}
-      {showEntryForm && (
-        <WeightEntryForm
-          weightUnit={user?.weight_unit ?? "lbs"}
-          onSuccess={handleEntrySuccess}
-          onCancel={() => setShowEntryForm(false)}
-        />
-      )}
+      {/* Weight entry form — slides down when + is clicked */}
+      <div
+        className={`grid transition-all duration-300 ease-in-out ${showEntryForm ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+      >
+        <div className="overflow-hidden min-h-0">
+          <WeightEntryForm
+            weightUnit={user?.weight_unit ?? "lbs"}
+            onSuccess={handleEntrySuccess}
+            onCancel={() => setShowEntryForm(false)}
+          />
+        </div>
+      </div>
 
       {/* Main content area */}
       <main className="flex-1 overflow-y-auto p-4 space-y-4">
