@@ -35,6 +35,9 @@ Thumbs.db
 .agent/screenshots/
 .agent/tasks.json
 
+# Local scripts (dev utilities, not part of the app)
+scripts/
+
 # Test runner output
 test-results/
 playwright-report/
