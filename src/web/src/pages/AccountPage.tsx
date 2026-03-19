@@ -5,7 +5,7 @@ import { DeleteAccountCard } from "@/components/account/DeleteAccountCard";
 import { DisplayNameForm } from "@/components/account/DisplayNameForm";
 import { EmailForm } from "@/components/account/EmailForm";
 import { PasswordForm } from "@/components/account/PasswordForm";
-import { WeightUnitForm } from "@/components/account/WeightUnitForm";
+//import { WeightUnitForm } from "@/components/account/WeightUnitForm";
 
 /** Account Info page — user profile management with sections for each setting. */
 export function AccountPage() {
@@ -32,7 +32,7 @@ export function AccountPage() {
           <DisplayNameForm />
           <EmailForm />
           <PasswordForm />
-          <WeightUnitForm />
+          {/*<WeightUnitForm />*/}
           <DeleteAccountCard />
         </div>
       </main>
