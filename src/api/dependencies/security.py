@@ -7,6 +7,8 @@ from jose import jwt
 SECRET_KEY = os.getenv("SECRET_KEY")
 if not SECRET_KEY:
     raise RuntimeError("SECRET_KEY environment variable must be set")
+if SECRET_KEY == "dev-secret-change-in-production":
+    raise RuntimeError("SECRET_KEY is set to the default insecure value — please change it")
 ALGORITHM = "HS256"
 TOKEN_EXPIRE_DAYS = 30
 

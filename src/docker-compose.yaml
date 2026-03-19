@@ -2,12 +2,11 @@ services:
   api:
     build: ./api
     restart: unless-stopped
-    ports:
-      - "8000:8000"
     environment:
       DATABASE_URL: sqlite:////app/data/db.sqlite
       SECRET_KEY: ${SECRET_KEY}
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+      ALLOW_PASSWORD_RESET: ${ALLOW_PASSWORD_RESET:-false}
     volumes:
       - sqlite_data:/app/data
 

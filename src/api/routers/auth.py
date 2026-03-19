@@ -1,3 +1,5 @@
+import os
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
@@ -8,6 +10,8 @@ from models.user import User
 from schemas.auth import AuthResponse, LoginRequest, RegisterRequest, ResetPasswordRequest, UserResponse
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
+
+ALLOW_PASSWORD_RESET = os.getenv("ALLOW_PASSWORD_RESET", "false").lower() == "true"
 
 
 @router.get("/me", response_model=UserResponse)
@@ -32,12 +36,20 @@ def login(body: LoginRequest, db: Session = Depends(get_db)):
 
 @router.post("/reset-password", status_code=status.HTTP_204_NO_CONTENT)
 def reset_password(body: ResetPasswordRequest, db: Session = Depends(get_db)):
-    """Reset a user's password by email. Returns 404 if the email is not registered."""
+    """Reset a user's password by email.
+
+    Only available when ALLOW_PASSWORD_RESET=true is set in the environment.
+    Always returns 204 regardless of whether the email exists, to prevent enumeration.
+    """
+    if not ALLOW_PASSWORD_RESET:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Password reset is disabled on this server. Contact your administrator.",
+        )
     user = db.query(User).filter(User.email == body.email).first()
-    if not user:
-        raise HTTPException(status_code=404, detail="No account found with that email")
-    user.hashed_password = hash_password(body.new_password)
-    db.commit()
+    if user:
+        user.hashed_password = hash_password(body.new_password)
+        db.commit()
 
 
 @router.post("/register", response_model=AuthResponse, status_code=status.HTTP_201_CREATED)

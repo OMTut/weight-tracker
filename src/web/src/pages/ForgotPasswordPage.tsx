@@ -171,9 +171,11 @@ function PasswordStep({
         await resetPassword(email, value.new_password);
         onDone();
       } catch (err: unknown) {
-        const status = (err as { response?: { status?: number } })?.response?.status;
-        if (status === 404) {
+        const res = (err as { response?: { status?: number; data?: { detail?: string } } })?.response;
+        if (res?.status === 404) {
           onEmailNotFound();
+        } else if (res?.status === 403) {
+          setApiError(res.data?.detail ?? "Password reset is disabled on this server.");
         } else {
           setApiError("Something went wrong. Please try again.");
         }
