@@ -26,7 +26,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="Weight Tracker API", lifespan=lifespan)
+app = FastAPI(title="Weight Tracker API", lifespan=lifespan, docs_url=None, redoc_url=None, openapi_url=None)
 
 _origins_env = os.getenv("ALLOWED_ORIGINS")
 if not _origins_env:

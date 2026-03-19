@@ -48,3 +48,4 @@ playwright-report/
 .codex/
 .cursor/
 scripts
+.mcp.json
