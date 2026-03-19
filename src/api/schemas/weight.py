@@ -5,13 +5,13 @@ from pydantic import BaseModel, ConfigDict, Field
 class CreateWeightRequest(BaseModel):
     """Schema for creating a new weight entry."""
 
-    weight_value: float = Field(..., gt=0)
+    weight_value: float = Field(..., gt=0, lt=1500)
 
 
 class UpdateWeightRequest(BaseModel):
     """Schema for updating an existing weight entry's value."""
 
-    weight_value: float = Field(..., gt=0)
+    weight_value: float = Field(..., gt=0, lt=1500)
 
 
 class WeightEntryResponse(BaseModel):

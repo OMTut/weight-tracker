@@ -9,26 +9,40 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/AuthContext";
 import { deleteAccount } from "@/lib/apiService";
 
-/** Danger Zone card — delete account with a confirmation dialog. */
+/** Danger Zone card — delete account with password-confirmed dialog. */
 export function DeleteAccountCard() {
   const { logout } = useAuth();
   const [open, setOpen] = useState(false);
+  const [password, setPassword] = useState("");
   const [deleting, setDeleting] = useState(false);
-  const [deleteError, setDeleteError] = useState("");
+  const [error, setError] = useState("");
 
-  /** Call DELETE /api/user/me and logout on success. */
+  function handleOpen() {
+    setPassword("");
+    setError("");
+    setOpen(true);
+  }
+
+  /** Call DELETE /api/user/me with password confirmation and logout on success. */
   async function handleDeleteAccount() {
     setDeleting(true);
+    setError("");
     try {
-      await deleteAccount();
+      await deleteAccount(password);
       logout();
-    } catch {
+    } catch (err: unknown) {
+      const status = (err as { response?: { status?: number } })?.response?.status;
+      setError(
+        status === 400
+          ? "Incorrect password."
+          : "Failed to delete account. Please try again.",
+      );
       setDeleting(false);
-      setOpen(false);
-      setDeleteError("Failed to delete account. Please try again.");
     }
   }
 
@@ -45,10 +59,7 @@ export function DeleteAccountCard() {
             Permanently delete your account and all weight data. This cannot be
             undone.
           </p>
-          {deleteError && (
-            <p className="text-destructive text-sm">{deleteError}</p>
-          )}
-          <Button variant="destructive" onClick={() => setOpen(true)}>
+          <Button variant="destructive" onClick={handleOpen}>
             Delete Account
           </Button>
         </CardContent>
@@ -60,9 +71,23 @@ export function DeleteAccountCard() {
             <DialogTitle>Delete Account</DialogTitle>
             <DialogDescription>
               This will permanently delete your account and all weight entries.
-              This action cannot be undone.
+              Enter your password to confirm.
             </DialogDescription>
           </DialogHeader>
+
+          <div className="flex flex-col gap-1">
+            <Label htmlFor="confirm-password">Password</Label>
+            <Input
+              id="confirm-password"
+              type="password"
+              placeholder="Your current password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && !deleting && handleDeleteAccount()}
+            />
+            {error && <p className="text-destructive text-sm">{error}</p>}
+          </div>
+
           <DialogFooter>
             <Button
               variant="outline"
@@ -74,7 +99,7 @@ export function DeleteAccountCard() {
             <Button
               variant="destructive"
               onClick={handleDeleteAccount}
-              disabled={deleting}
+              disabled={deleting || !password}
             >
               {deleting ? "Deleting…" : "Delete Account"}
             </Button>

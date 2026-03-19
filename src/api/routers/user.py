@@ -6,7 +6,7 @@ from dependencies.auth import get_current_user
 from dependencies.security import hash_password, verify_password
 from models.user import User
 from schemas.auth import UserResponse
-from schemas.user import UpdatePasswordRequest, UpdatePreferencesRequest, UpdateProfileRequest
+from schemas.user import DeleteAccountRequest, UpdatePasswordRequest, UpdatePreferencesRequest, UpdateProfileRequest
 
 router = APIRouter(prefix="/api/user", tags=["user"])
 
@@ -66,10 +66,13 @@ def update_preferences(
 
 @router.delete("/me", status_code=204)
 def delete_account(
+    body: DeleteAccountRequest,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Permanently delete the current user's account and all associated weight entries."""
+    """Permanently delete the current user's account after verifying their password."""
+    if not verify_password(body.password, current_user.hashed_password):
+        raise HTTPException(status_code=400, detail="Incorrect password")
     db.delete(current_user)
     db.commit()
     return Response(status_code=204)
