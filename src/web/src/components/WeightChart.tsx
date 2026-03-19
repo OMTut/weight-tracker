@@ -159,6 +159,7 @@ export function WeightChart({ refreshKey }: WeightChartProps) {
                 tick={<AxisTick anchor="middle" />}
                 tickLine={false}
                 axisLine={false}
+                tickMargin={8}
               />
               <YAxis
                 domain={[minY, maxY]}

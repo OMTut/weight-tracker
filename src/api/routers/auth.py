@@ -5,7 +5,7 @@ from database import get_db
 from dependencies.auth import get_current_user
 from dependencies.security import create_access_token, hash_password, verify_password
 from models.user import User
-from schemas.auth import AuthResponse, LoginRequest, RegisterRequest, UserResponse
+from schemas.auth import AuthResponse, LoginRequest, RegisterRequest, ResetPasswordRequest, UserResponse
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -28,6 +28,16 @@ def login(body: LoginRequest, db: Session = Depends(get_db)):
         access_token=token,
         user=UserResponse.model_validate(user),
     )
+
+
+@router.post("/reset-password", status_code=status.HTTP_204_NO_CONTENT)
+def reset_password(body: ResetPasswordRequest, db: Session = Depends(get_db)):
+    """Reset a user's password by email. Returns 404 if the email is not registered."""
+    user = db.query(User).filter(User.email == body.email).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="No account found with that email")
+    user.hashed_password = hash_password(body.new_password)
+    db.commit()
 
 
 @router.post("/register", response_model=AuthResponse, status_code=status.HTTP_201_CREATED)

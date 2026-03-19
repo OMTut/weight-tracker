@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr, ConfigDict
+from pydantic import BaseModel, EmailStr, ConfigDict, Field
 
 
 class LoginRequest(BaseModel):
@@ -25,3 +25,8 @@ class AuthResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
     user: UserResponse
+
+
+class ResetPasswordRequest(BaseModel):
+    email: EmailStr
+    new_password: str = Field(min_length=8, description="Must be at least 8 characters")

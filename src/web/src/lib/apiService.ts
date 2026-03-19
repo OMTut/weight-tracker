@@ -65,3 +65,11 @@ export const updatePreferences = (weight_unit: "lbs" | "kg"): Promise<User> =>
 
 export const deleteAccount = (): Promise<void> =>
   api.delete("/api/user/me").then(() => undefined);
+
+export const resetPassword = (
+  email: string,
+  new_password: string,
+): Promise<void> =>
+  api
+    .post("/api/auth/reset-password", { email, new_password })
+    .then(() => undefined);

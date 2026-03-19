@@ -147,6 +147,12 @@ export function LoginPage() {
             </form.Subscribe>
 
             <p className="text-muted-foreground text-center text-sm">
+              <Link to="/forgot-password" className="text-primary underline">
+                Forgot password?
+              </Link>
+            </p>
+
+            <p className="text-muted-foreground text-center text-sm">
               Don&apos;t have an account?{" "}
               <Link to="/signup" className="text-primary underline">
                 Sign up

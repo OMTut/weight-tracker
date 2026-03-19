@@ -10,6 +10,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { LoginPage } from "@/pages/LoginPage";
 import { SignupPage } from "@/pages/SignupPage";
+import { ForgotPasswordPage } from "@/pages/ForgotPasswordPage";
 import { DashboardPage } from "@/pages/DashboardPage";
 import { AccountPage } from "@/pages/AccountPage";
 
@@ -43,6 +44,12 @@ const signupRoute = createRoute({
   component: SignupPage,
 });
 
+const forgotPasswordRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/forgot-password",
+  component: ForgotPasswordPage,
+});
+
 /** Protected layout — wraps authenticated routes */
 const protectedLayout = createRoute({
   getParentRoute: () => rootRoute,
@@ -68,6 +75,7 @@ const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
   signupRoute,
+  forgotPasswordRoute,
   protectedLayout.addChildren([dashboardRoute, accountRoute]),
 ]);
 
