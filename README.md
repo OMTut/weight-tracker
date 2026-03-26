@@ -13,6 +13,8 @@ A simple, private weight tracking app you can run on your own computer or server
 
 The easiest way to run Weight Tracker is with [Docker](https://www.docker.com/products/docker-desktop/). If you have Docker installed, the whole app starts with one command.
 
+Create a directory, download docker-compose.yaml, create a env file, then compose up. That's it. If you want to build from the source, then clone the repo. Have fun.
+
 ### 1. Download the config files
 
 Clone this repository or [download it as a ZIP](../../archive/refs/heads/master.zip) and open the root folder.
@@ -31,7 +33,7 @@ ALLOW_PASSWORD_RESET=false
 
 **`ALLOWED_ORIGINS`** — The address you'll use to access the app in your browser. If you're running it on your local machine, `http://localhost:3001` is correct. If you're hosting it on a server with a domain name, put that here instead (e.g. `https://weight.yourdomain.com`).
 
-**`ALLOW_PASSWORD_RESET`** — Set to `true` if you want to allow password resets. Defaults to `false`.
+**`ALLOW_PASSWORD_RESET`** — Set to `true` if you want to allow password resets. Defaults to `false`. The password reset functionality just overwrites the existing password. No email confirmation, text, etc. Use it cautiously.
 
 ### 3. Start the app
 
