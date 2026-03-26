@@ -1,0 +1,22 @@
+services:
+  api:
+    image: ghcr.io/omtut/weight-tracker-api:latest
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: sqlite:////app/data/db.sqlite
+      SECRET_KEY: ${SECRET_KEY}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
+      ALLOW_PASSWORD_RESET: ${ALLOW_PASSWORD_RESET:-false}
+    volumes:
+      - sqlite_data:/app/data
+
+  web:
+    image: ghcr.io/omtut/weight-tracker-web:latest
+    restart: unless-stopped
+    ports:
+      - "3001:80"
+    depends_on:
+      - api
+
+volumes:
+  sqlite_data:
